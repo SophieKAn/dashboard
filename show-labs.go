@@ -7,11 +7,11 @@ package main
 import "fmt"
 import "net"
 import "time"
-import "strconv"
+//import "strconv"
 import "color"
 
 func main() {
-  fmt.Println(";;;;;;;;;;;;;;;;;;;;;;;;;CF 162;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
+  /*fmt.Println(";;;;;;;;;;;;;;;;;;;;;;;;;CF 162;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
   for i := 2; i < 28; i++ {
     ip := fmt.Sprintf("***REMOVED***.137.%v", i)
     fmt.Println(operatingSystem(ip))
@@ -45,7 +45,17 @@ func main() {
   for i := 163; i < 183; i++ {
     ip := fmt.Sprintf("***REMOVED***.137.%v", i)
     fmt.Println(operatingSystem(ip))
+  }*/
+
+  fmt.Println(";;;;;;;;;;;;;;;;;;;;;;;;;CF 418;;;;;;;;;;;;;;;;;;;;;;;;;;;;") 
+  for i := 98; i < 110; i++ {
+    ip := fmt.Sprintf("***REMOVED***.30.%v", i)
+    fmt.Println(operatingSystem(ip))
   }
+
+
+
+
 }
 
 //Name:operatingSystem
