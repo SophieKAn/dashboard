@@ -4,11 +4,12 @@
 
 package main
 
-import "fmt"
-import "net"
-import "time"
-//import "strconv"
-import "color"
+import(
+  "fmt"
+  "net"
+  "time"
+  "color"
+)
 
 func main() {
   /*fmt.Println(";;;;;;;;;;;;;;;;;;;;;;;;;CF 162;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
@@ -47,7 +48,7 @@ func main() {
     fmt.Println(operatingSystem(ip))
   }*/
 
-  fmt.Println(";;;;;;;;;;;;;;;;;;;;;;;;;CF 418;;;;;;;;;;;;;;;;;;;;;;;;;;;;") 
+  fmt.Println(";;;;;;;;;;;;;;;;;;;;;;;;;CF 418;;;;;;;;;;;;;;;;;;;;;;;;;;;;")
   for i := 98; i < 110; i++ {
     ip := fmt.Sprintf("***REMOVED***.30.%v", i)
     fmt.Println(operatingSystem(ip))

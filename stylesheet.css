@@ -1,12 +1,15 @@
-@import "compass/css3";
+.widget,.cs_lab {
+  display: -webkit-flex;
+  -webkit-flex-flow: row wrap;
+  display: flex;
+  flex-flow: row wrap;
+  align-items:stretch;
+
+}
 
 .widget {
-  display: flex;
-  -webkit-flex-flow: row wrap;
-  padding:15px;
-  
+  padding:15px; 
   justify-content:space-around;
-  align-items: stretch;
   align-content:stretch;
 }
 
@@ -16,13 +19,11 @@
   height:225px;
   width:200px;
   padding:20px;
-  
-  display:flex;
-  -webkit-flex-flow: row wrap;
   justify-content:flex-start;
-  align-items:stretch;
   align-content:space-between;
 }
+
+
 
 .lab_title {
   width: 180px;
