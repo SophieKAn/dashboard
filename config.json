@@ -1,12 +1,14 @@
 [
    {
+      "title": "CF 405",
       "prefix": "***REMOVED***",
       "start": "00",
       "end": "20"
    },
    {
+      "title": "Linux Machines",
       "prefix": "linux",
-      "start": "start",
+      "start": "01",
       "end": "12"
    }
 ]

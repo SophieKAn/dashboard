@@ -5,20 +5,50 @@
 package main
 
 import(
+  "os"
   "net"
   "fmt"
   "time"
   "color"
-  //"io/ioutil"
-  //"encoding/json"
+  "io/ioutil"
+  "encoding/json"
+  //"reflect"
 )
 
+type MyJson []map[string]string
+
 func main() {
-  for i := 98; i < 110; i++ {
-    ip := fmt.Sprintf("***REMOVED***.30.%v", i)
-    fmt.Println(operatingSystem(ip))
+  var data MyJson
+
+  config_file, err := ioutil.ReadFile("config.json")
+  if err != nil {
+    fmt.Printf("File error: %v", err)
+    os.Exit(1)
   }
+
+  err = json.Unmarshal(config_file, &data)
+  if err != nil {
+    fmt.Printf("File error: %v", err)
+    os.Exit(1)
+  }
+
+
+  /*for index,_ := range data {
+    processLab(data[index])
+  }*/
+
+
+
+
+
+
+
+
+    fmt.Println(operatingSystem("linux-10.***REMOVED***"))
+
 }
+
+
 
 /* OPERATING_SYSTEM */
 // Inputs:An IP address in String form
@@ -26,19 +56,13 @@ func main() {
 // Function:Given the machine's IP address, this function will
 //          return a string containing the current OS of that particular
 //          machine, or if it is inaccessible at the time.
-func operatingSystem(IP string) (string) {
-  //look up address
-  addr, err := net.LookupAddr(IP)
-  if err != nil {
-    return color.YellowString(" issue with IP address")
-  }
-  //print address
-  var adstring string = addr[0]
-  fmt.Print(adstring[0:len(adstring)-1])
+func operatingSystem(hostname string) (string) {
+
+  fmt.Print(hostname)
   //try to connect on various ports
-  if tryToConnect(IP, "***REMOVED***") == nil {
+  if tryToConnect(hostname, "***REMOVED***") == nil {
     return color.GreenString(" linux")
-  } else if tryToConnect(IP, "***REMOVED***") == nil {
+  } else if tryToConnect(hostname, "***REMOVED***") == nil {
     return color.BlueString(" windows")
   } else {
     return color.RedString(" inaccessible")
@@ -46,14 +70,23 @@ func operatingSystem(IP string) (string) {
 }
 
 /* TRY_TO_CONNECT */
-// Inputs:Two strings: an IP address and a port number
+// Inputs:Two strings: an hostname and a port number
 // Outputs:An error, either nil or not
 // Function:Tries to connect to the given machine using the given port.
 //          returns a new error upon failure, and a nil error upon success.
-func tryToConnect(IP string, port string) (error) {
-  conn, err := net.DialTimeout("tcp", IP + ":" + port, time.Millisecond*50)
+func tryToConnect(hostname string, port string) (error) {
+  conn, err := net.DialTimeout("tcp", hostname + ":" + port, time.Millisecond*50)
   if err == nil {
     conn.Close()
   }
   return err
+}
+
+
+
+
+func processLab(lab []map[string]string) (string) {
+
+  //fmt.Println(lab["title"])
+  return "yes"
 }
