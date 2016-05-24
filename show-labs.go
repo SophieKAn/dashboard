@@ -33,9 +33,9 @@ func main() {
   }
 
 
-  /*for index,_ := range data {
+  for index,_ := range data {
     processLab(data[index])
-  }*/
+  }
 
 
 
@@ -44,20 +44,19 @@ func main() {
 
 
 
-    fmt.Println(operatingSystem("linux-10.***REMOVED***"))
+  fmt.Println(operatingSystem("linux-10.***REMOVED***"))
 
 }
 
 
 
 /* OPERATING_SYSTEM */
-// Inputs:An IP address in String form
+// Inputs:The hostname in String form
 // Outputs:A string indicating the status of the machine
-// Function:Given the machine's IP address, this function will
+// Function:Given the machine's hostname, this function will
 //          return a string containing the current OS of that particular
 //          machine, or if it is inaccessible at the time.
 func operatingSystem(hostname string) (string) {
-
   fmt.Print(hostname)
   //try to connect on various ports
   if tryToConnect(hostname, "***REMOVED***") == nil {
@@ -85,8 +84,16 @@ func tryToConnect(hostname string, port string) (error) {
 
 
 
-func processLab(lab []map[string]string) (string) {
+func processLab(lab map[string]string) (string) {
+  var title = lab["title"]
+  var prefix = lab["prefix"]
+  var start = lab["start"]
+  var end = lab["end"]
 
-  //fmt.Println(lab["title"])
+  fmt.Println("title: " + title)
+  fmt.Println("prefix: " + prefix)
+  fmt.Println("start: " + start)
+  fmt.Println("end: " + end)
+
   return "yes"
 }
