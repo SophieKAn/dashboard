@@ -37,15 +37,6 @@ func main() {
     processLab(data[index])
   }
 
-
-
-
-
-
-
-
-  fmt.Println(operatingSystem("linux-10.***REMOVED***"))
-
 }
 
 
@@ -83,19 +74,28 @@ func tryToConnect(hostname string, port string) (error) {
 
 
 
-
+/* PROCESS_LAB */
+// Inputs: A list of maps of strings that represents the config.json file.
+// Outputs: Nothing yet
+// Function: Prints the accessibility of the lab machines present in
+//           config.json
 func processLab(lab map[string]string) {
   title := lab["title"]
   prefix := lab["prefix"]
   start, err := strconv.Atoi(lab["start"])
   end, err := strconv.Atoi(lab["end"])
-  if (err != nil {
+  if (err != nil) {
     fmt.Printf("Error with config file")
   }
 
-
+  fmt.Println("::::::::::::::::::::::::: " + title + " :::::::::::::::::::::::::")
   for i := start; i<=end; i++ {
-    fmt.Println(operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
+    if i < 10 {
+      fmt.Println(operatingSystem(prefix + "-0" + strconv.Itoa(i) + ".***REMOVED***"))
+    } else {
+      fmt.Println(operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
+    }
   }
+  fmt.Println();
 
 }
