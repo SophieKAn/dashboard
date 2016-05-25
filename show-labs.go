@@ -36,10 +36,7 @@ func main() {
   for index,_ := range data {
     processLab(data[index])
   }
-
 }
-
-
 
 /* OPERATING_SYSTEM */
 // Inputs:The hostname in String form
@@ -72,30 +69,29 @@ func tryToConnect(hostname string, port string) (error) {
   return err
 }
 
-
-
 /* PROCESS_LAB */
 // Inputs: A list of maps of strings that represents the config.json file.
 // Outputs: Nothing yet
 // Function: Prints the accessibility of the lab machines present in
 //           config.json
 func processLab(lab map[string]string) {
-  title := lab["title"]
-  prefix := lab["prefix"]
-  start, err := strconv.Atoi(lab["start"])
-  end, err := strconv.Atoi(lab["end"])
-  if (err != nil) {
-    fmt.Printf("Error with config file")
+  title, prefix := lab["title"], lab["prefix"]
+  start, err1 := strconv.Atoi(lab["start"])
+  end, err2 := strconv.Atoi(lab["end"])
+  if (err1 != nil || err2 != nil) {
+    fmt.Printf("Error with JSON file")
+    os.Exit(1)
   }
-
-  fmt.Println("::::::::::::::::::::::::: " + title + " :::::::::::::::::::::::::")
+  /* Print Everything */
+  fmt.Println("::::::::::::::::::::::: " + title + " :::::::::::::::::::::::")
   for i := start; i<=end; i++ {
     if i < 10 {
-      fmt.Println(operatingSystem(prefix + "-0" + strconv.Itoa(i) + ".***REMOVED***"))
+      fmt.Println(operatingSystem(prefix + "-0" +
+                                  strconv.Itoa(i) + ".***REMOVED***"))
     } else {
-      fmt.Println(operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
+      fmt.Println(operatingSystem(prefix + "-" +
+                                  strconv.Itoa(i) + ".***REMOVED***"))
     }
   }
   fmt.Println();
-
 }
