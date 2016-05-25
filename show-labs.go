@@ -10,15 +10,14 @@ import(
   "fmt"
   "time"
   "color"
+  "strconv"
   "io/ioutil"
   "encoding/json"
-  //"reflect"
 )
 
 type MyJson []map[string]string
 
 func main() {
-  var data MyJson
 
   config_file, err := ioutil.ReadFile("config.json")
   if err != nil {
@@ -26,6 +25,7 @@ func main() {
     os.Exit(1)
   }
 
+  var data MyJson
   err = json.Unmarshal(config_file, &data)
   if err != nil {
     fmt.Printf("File error: %v", err)
@@ -84,16 +84,18 @@ func tryToConnect(hostname string, port string) (error) {
 
 
 
-func processLab(lab map[string]string) (string) {
-  var title = lab["title"]
-  var prefix = lab["prefix"]
-  var start = lab["start"]
-  var end = lab["end"]
+func processLab(lab map[string]string) {
+  title := lab["title"]
+  prefix := lab["prefix"]
+  start, err := strconv.Atoi(lab["start"])
+  end, err := strconv.Atoi(lab["end"])
+  if (err != nil {
+    fmt.Printf("Error with config file")
+  }
 
-  fmt.Println("title: " + title)
-  fmt.Println("prefix: " + prefix)
-  fmt.Println("start: " + start)
-  fmt.Println("end: " + end)
 
-  return "yes"
+  for i := start; i<=end; i++ {
+    fmt.Println(operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
+  }
+
 }
