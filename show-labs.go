@@ -1,6 +1,4 @@
 /* Sophia Anderson | ander569@wwu.edu */
-// The goal of this program is to access all the computers in the labs and
-// indicate whether each one is running Windows or Linux, or is inaccessible.
 
 package main
 
@@ -32,7 +30,10 @@ func main() {
     os.Exit(1)
   }
 
-
+  type mainMessage struct {
+    Title string
+    Access map[string]string
+  }
   for index,_ := range data {
     processLab(data[index])
   }
@@ -75,6 +76,7 @@ func tryToConnect(hostname string, port string) (error) {
 // Function: Prints the accessibility of the lab machines present in
 //           config.json
 func processLab(lab map[string]string) {
+
   title, prefix := lab["title"], lab["prefix"]
   start, err1 := strconv.Atoi(lab["start"])
   end, err2 := strconv.Atoi(lab["end"])
