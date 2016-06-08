@@ -35,9 +35,10 @@ func main() {
   }
 
   for index,_ := range data {
-    jso  := processLab(data[index])
-    fmt.Println(jso)
+    status_list  := processLab(data[index])
   }
+
+
 }
 
 
@@ -94,9 +95,11 @@ func processLab(lab map[string]string) ([]string){
 
   for i := start; i<=end; i++ { //for each machine
     if i < 10 {
-      status_list = append(status_list, operatingSystem(prefix + "-0" + strconv.Itoa(i) + ".***REMOVED***"))
+      status_list = append(status_list,
+                           operatingSystem(prefix + "-0" + strconv.Itoa(i) + ".***REMOVED***"))
     } else {
-      status_list = append(status_list, operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
+      status_list = append(status_list,
+                           operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
     }
   }
   return status_list
