@@ -1,0 +1,10 @@
+```json
+[
+  {
+    "status": ["linux","linux","windows"]
+  },
+  {
+    "status": ["inaccessible","linux","windows"]
+  }
+]
+```

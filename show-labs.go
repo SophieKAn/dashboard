@@ -42,10 +42,6 @@ func main() {
 }
 
 
-
-
-
-
 /* Functions */
 
 /* OPERATING_SYSTEM */
@@ -81,7 +77,7 @@ func tryToConnect(hostname string, port string) (error) {
 // Inputs: A map from the json that contains info about the lab.
 // Outputs: A list of strings with the statuses of all the machines in the lab.
 // Function: Finds the status of all the machines in the given lab.
-func processLab(lab map[string]string) ([]string){
+func processLab(lab map[string]string) ([]string) {
 
   prefix := lab["prefix"]
   start, err1 := strconv.Atoi(lab["start"])
@@ -104,3 +100,5 @@ func processLab(lab map[string]string) ([]string){
   }
   return status_list
 }
+
+
