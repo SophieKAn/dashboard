@@ -23,7 +23,7 @@ func main() {
   err = json.Unmarshal(config_file, &labs)
   check(err)
 
-  for lab,_ := range labs {
+  for lab := range labs {
     status_list  := processLab(labs[lab].(map[string]interface{}))
     fmt.Println(status_list[0])
   }
@@ -67,7 +67,7 @@ func processLab(lab map[string]interface{}) ([]string) {
   var status_list []string
 
   for i := start; i <= end; i++ {
-    hostname := fmt.Sprintf("%s-%02d.***REMOVED***\n", prefix, i)
+    hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)
     status_list = append(status_list, operatingSystem(hostname))
   }
   return status_list
