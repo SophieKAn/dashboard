@@ -1,5 +1,6 @@
-/* Sophia Anderson | ander569@wwu.edu */
-
+// Package main is responsible for obtaining the statuses of the machines/labs
+// indicated in config.json. It periodically checks for changes and updates the
+// client with new information.
 package main
 
 import(
@@ -8,64 +9,48 @@ import(
   "fmt"
   "time"
   "color"
-  "strconv"
   "io/ioutil"
   "encoding/json"
 )
 
-type MyJson []map[string]string
-
-
-/* Main */
-
+// main opens and reads config.json into a MyJson type, and then proceeds to
+// find the machine statuses for all the labs outlined in the config file.
 func main() {
-  //Read configuration file
   config_file, err := ioutil.ReadFile("config.json")
-  if err != nil {
-    fmt.Printf("File error: %v", err)
-    os.Exit(1)
+  check(err)
+
+  var labs []interface{}
+  err = json.Unmarshal(config_file, &labs)
+  check(err)
+
+  for lab,_ := range labs {
+    status_list  := processLab(labs[lab].(map[string]interface{}))
+    fmt.Println(status_list[0])
   }
-
-  //Unmarshal config.json
-  var data MyJson
-  err = json.Unmarshal(config_file, &data)
-  if err != nil {
-    fmt.Printf("File error: %v", err)
-    os.Exit(1)
-  }
-
-  for index,_ := range data {
-    status_list  := processLab(data[index])
-  }
-
-
 }
 
-
-/* Functions */
-
-/* OPERATING_SYSTEM */
-// Inputs: The hostname in String form.
-// Outputs: A string indicating the status of the hostname.
-// Function: Given a machine's hostname, this function will try to connect to
-//           the host and return 'linux,' 'windows,' or 'inaccessible.'
+// operatingSystem takes a hostname(str) and returns what operating system that
+// machine is running based on which port is successfully used to connect. 
+// It returns 'linux', 'windows', or 'inaccessible'.
 func operatingSystem(hostname string) (string) {
   //try to connect on various ports
   if tryToConnect(hostname, "***REMOVED***") == nil {
-    return color.GreenString(" linux")
+    fmt.Println("linux")
+    return color.GreenString("linux")
   } else if tryToConnect(hostname, "***REMOVED***") == nil {
-    return color.BlueString(" windows")
+    fmt.Println("windows")
+    return color.BlueString("windows")
   } else {
-    return color.RedString(" inaccessible")
+    fmt.Println("inaccessible")
+    return color.RedString("inaccessible")
   }
 }
 
-/* TRY_TO_CONNECT */
-// Inputs: A hostname and a port number as strings.
-// Outputs: An error or a nil error.
-// Function: Tries to connect to the given machine using the given port.
-//           Returns an error upon failure, and nil upon success.
+// tryToConnect takes a hostname and a port number and tries to establish a
+// connection using those parameters.
+// It returns an error, if one occurrs.
 func tryToConnect(hostname string, port string) (error) {
+  fmt.Println("Trying to connect to " + hostname + ":" + port)
   conn, err := net.DialTimeout("tcp", hostname + ":" + port, time.Millisecond*50)
   if err == nil {
     conn.Close()
@@ -73,32 +58,25 @@ func tryToConnect(hostname string, port string) (error) {
   return err
 }
 
-/* PROCESS_LAB */
-// Inputs: A map from the json that contains info about the lab.
-// Outputs: A list of strings with the statuses of all the machines in the lab.
-// Function: Finds the status of all the machines in the given lab.
-func processLab(lab map[string]string) ([]string) {
-
+// processLab takes the information for one lab and returns an ordered list
+// containing the operating statuses for each machine.
+func processLab(lab map[string]interface{}) ([]string) {
   prefix := lab["prefix"]
-  start, err1 := strconv.Atoi(lab["start"])
-  end, err2 := strconv.Atoi(lab["end"])
-  if (err1 != nil || err2 != nil) {
-    fmt.Printf("Error with JSON file")
-    os.Exit(1)
-  }
-  //Get status and put in list
-  var status_list []string //create a list for the lab
+  start := int(lab["start"].(float64))
+  end := int(lab["end"].(float64))
+  var status_list []string
 
-  for i := start; i<=end; i++ { //for each machine
-    if i < 10 {
-      status_list = append(status_list,
-                           operatingSystem(prefix + "-0" + strconv.Itoa(i) + ".***REMOVED***"))
-    } else {
-      status_list = append(status_list,
-                           operatingSystem(prefix + "-" + strconv.Itoa(i) + ".***REMOVED***"))
-    }
+  for i := start; i <= end; i++ {
+    hostname := fmt.Sprintf("%s-%02d.***REMOVED***\n", prefix, i)
+    status_list = append(status_list, operatingSystem(hostname))
   }
   return status_list
 }
 
-
+// check
+func check(e error) {
+  if e != nil {
+    fmt.Printf("Error: %v", e)
+    os.Exit(1)
+  }
+}
