@@ -1,10 +1,18 @@
-```json
-[
-  {
-    "status": ["linux","linux","windows"]
-  },
-  {
-    "status": ["inaccessible","linux","windows"]
-  }
-]
-```
+{
+  "***REMOVED***": [
+    {
+      "machine": 1,
+      "status": 1
+    },
+    {
+      "machine": 7,
+      "status:": 2
+    }
+  ],
+  "linux":[
+    {
+      "machine": 12,
+      "status": 0
+    }
+  ]
+}
