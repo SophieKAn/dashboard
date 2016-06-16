@@ -4,16 +4,19 @@ import(
   "os"
   "fmt"
   "io/ioutil"
+  "net/http"
   "encoding/json")
 
 // main opens and reads config.json into a MyJson type, and then proceeds to
 // find the machine statuses for all the labs outlined in the config file.
 func main() {
-  labs := getConfig("config.json") //information directly from the config file.
-  lab_status := processAllLabs(labs) //return the statuses in format to send.
+  config_path := "./static/config.json"
 
-  serve(lab_status)
+  labs := getConfig(config_path)
+  lab_status := processAllLabs(labs)
+  fmt.Println(lab_status)
 
+  panic(http.ListenAndServe(":8080", http.FileServer(http.Dir("./static"))))
 
 
 }
