@@ -10,15 +10,20 @@ import(
 // main opens and reads config.json into a MyJson type, and then proceeds to
 // find the machine statuses for all the labs outlined in the config file.
 func main() {
-  config_path := "./static/config.json"
 
-  labs := getConfig(config_path)
-  lab_status := processAllLabs(labs)
-  fmt.Println(lab_status)
 
+  /* Start the server set up framework of labs from config.json */
   panic(http.ListenAndServe(":8080", http.FileServer(http.Dir("./static"))))
 
 
+  /* Get initial status of every machine */
+  labs := getConfig("./static/config.json")
+  status, err := json.Marshal(processAll(labs))
+  check(err)
+  _ = status 
+  /* Update status of each machine */
+
+  update(status)
 }
 
 
@@ -30,20 +35,21 @@ func main() {
 
 /* FUNCTIONS */
 
-// processAllLabs obtains the beginning statuses of all the labs.
-func processAllLabs(labs []interface{}) (map[string][]map[string]int) {
+// processAll calls process on each lab to obtain the initial status of all the
+// machines.
+func processAll(labs []interface{}) (map[string][]map[string]int) {
   all_labs := make(map[string][]map[string]int)
 
   for lab := range labs {
-    prefix,one_lab := processLab(labs[lab].(map[string]interface{}))
+    prefix,one_lab := process(labs[lab].(map[string]interface{}))
     all_labs[prefix] = one_lab
   }
   return all_labs
 }
 
-// processLab takes the information for one lab and returns an ordered list
-// containing the operating statuses for each machine.
-func processLab(lab map[string]interface{}) (string, []map[string]int) {
+// process gets called on one lab. It calls systemStatus on each machine in the
+// lab to obtain the initial statuses of all the machines.
+func process(lab map[string]interface{}) (string, []map[string]int) {
   prefix := lab["prefix"]
   start := int(lab["start"].(float64))
   end := int(lab["end"].(float64))
@@ -53,7 +59,7 @@ func processLab(lab map[string]interface{}) (string, []map[string]int) {
     hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)
 
     machine := make(map[string]int)
-    machine["machine"], machine["status"] = i, operatingSystem(hostname)
+    machine["machine"], machine["status"] = i, systemStatus(hostname)
     machines_in_lab = append(machines_in_lab, machine)
   }
   return prefix.(string), machines_in_lab
