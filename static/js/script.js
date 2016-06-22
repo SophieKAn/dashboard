@@ -16,7 +16,7 @@ function initializePage(url) {
           let lab_title = document.createElement('header');
           lab_title.className = "lab_title";
           lab_title.innerText = l.title;
-          cs_lab.appendChild(lab_title); 
+          cs_lab.appendChild(lab_title);
           widget.appendChild(cs_lab);
           for (i = l.start; i <= l.end; i++) {
             let lab_machine = document.createElement('div');
@@ -31,11 +31,8 @@ function initializePage(url) {
   }
 
   req.open('GET', url, true);
-  req.send(); 
-} 
-
-
-
+  req.send();
+}
 
 
 function updateStatus() {

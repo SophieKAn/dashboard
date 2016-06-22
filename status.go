@@ -7,14 +7,14 @@ import (
 
 
 // operatingSystem takes a hostname(str) and returns what operating system that
-// machine is running based on which port is successfully used to connect. 
+// machine is running based on which port is successfully used to connect.
 // It returns 'linux', 'windows', or 'inaccessible'.
 func systemStatus(hostname string) (int) {
   //try to connect on various ports
   if accessible(hostname, "***REMOVED***") {
-    return 0 
+    return 0
   } else if accessible(hostname, "***REMOVED***") {
-    return 1 
+    return 1
   } else {
     return 2
   }
@@ -53,6 +53,6 @@ func update(labs map[string][]map[string]int) (map[string][]map[string]int) {
       }
     }
   all_labs[lab_name] = machines_in_lab
-  } 
+  }
   return all_labs
 }
