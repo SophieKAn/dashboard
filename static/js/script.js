@@ -27,8 +27,18 @@ function initializePage(url) {
         });
       }
     }
+    updateStatus()
   }
 
   req.open('GET', url, true);
   req.send(); 
 } 
+
+
+
+
+
+function updateStatus() {
+
+  //get the json and update
+}

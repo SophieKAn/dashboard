@@ -11,22 +11,20 @@ import(
 // find the machine statuses for all the labs outlined in the config file.
 func main() {
 
-
   /* Start the server set up framework of labs from config.json */
-  panic(http.ListenAndServe(":8080", http.FileServer(http.Dir("./static"))))
-
+  go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
+  //check(err)
 
   /* Get initial status of every machine */
   labs := getConfig("./static/config.json")
-  status, err := json.Marshal(processAll(labs))
+  lab_statuses := processAll(labs)
+  status, err := json.Marshal(lab_statuses) //right here 'status' is of type []uint8
   check(err)
-  _ = status 
-  /* Update status of each machine */
+  _ = status
 
-  update(status)
+  /* update the status once */
+  update(lab_statuses)
 }
-
-
 
 
 
