@@ -16,7 +16,6 @@
 
 .cs_lab {
   background:tomato;
-  height:225px;
   width:200px;
   padding:20px;
   justify-content:flex-start;
@@ -25,7 +24,7 @@
 
 
 
-.lab_title {
+lab_title {
   width: 180px;
   height: 30px;
   text-align:center;
