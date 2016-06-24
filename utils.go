@@ -12,5 +12,5 @@ func check(e error) bool {
 		fmt.Printf("Error: %v", e)
 		os.Exit(1)
 	}
-  return true
+	return true
 }

@@ -29,8 +29,8 @@ func systemStatus(hostname string) int {
 // It returns an error, if one occurrs.
 func accessible(hostn string, port string) bool {
 	conn, err := net.DialTimeout("tcp", hostn+":"+port, time.Millisecond*50)
-  check := check(err)
-  if check {
+	check := check(err)
+	if check {
 		conn.Close()
 		return true
 	}
