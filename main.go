@@ -37,7 +37,7 @@ func main() {
 // getMachines takes the unmarshalled config.json and construct a slice of
 // pointers to Machine structs representing all the machines in all the labs.
 func getMachines(labs []interface{}) []*Machine {
-	all_machines := make([]*Machine, 1)
+	all_machines := make([]*Machine, 0)
 
 	for lab := range labs {
 		this_lab := labs[lab].(map[string]interface{})

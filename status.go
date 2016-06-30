@@ -8,6 +8,7 @@ import (
 	"net"
 	"sync"
 	"time"
+	"fmt"
 )
 
 const (
@@ -15,10 +16,9 @@ const (
 	WINDOWS      = 1
 	INACCESSIBLE = 2
 )
-
-// systemStatus takes a hostname(str) and returns what operating system that
-// machine is running based on which port is successfully used to connect.
-func systemStatus(hostname string) int {
+//
+//
+func getStatus(hostname string) int {
 	if accessible(hostname, "***REMOVED***") {
 		return LINUX
 	} else if accessible(hostname, "***REMOVED***") {
@@ -30,15 +30,16 @@ func systemStatus(hostname string) int {
 
 // accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
-// It returns an error, if one occurrs.
 func accessible(hostn string, port string) bool {
+	fmt.Println(hostn)
 	conn, err := net.DialTimeout("tcp", hostn+":"+port, time.Millisecond*50)
-	check := check(err)
-	if check {
+
+	if err == nil {
 		conn.Close()
 		return true
+	} else {
+		return false
 	}
-	return false
 }
 
 //
@@ -50,8 +51,20 @@ func updateStatuses(machines []*Machine) {
 
 		go func(m *Machine) {
 			defer wg.Done()
-			// m.UpdateStatus()
+			m.UpdateStatus()
 		}(machine)
 	}
 	wg.Wait()
+}
+
+//
+//
+func (m *Machine) UpdateStatus() {
+	old_status := m.status
+	new_status := getStatus(m.hostname)
+
+	if new_status != old_status {
+		// Send out changes
+		m.status = new_status
+	}
 }
