@@ -24,23 +24,20 @@ func main() {
 
 	labs := getConfig("./static/config.json")
 
-
-	lab_statuses := buildAll(labs)
-
-	/* update the status once */
-	update(lab_statuses)
+	/* Set up framework for labs. */
+	lab_frameworks := buildAll(labs)
 }
 
 /* FUNCTIONS */
 
-// buildAll calls build on each lab to obtain the initial status of all the
-// machines.
-func buildAll(labs []interface{}) map[string][]map[string]int {
-	all_labs := make(map[string][]map[string]int)
+// buildAll takes the unmarshaled json and calls build on all the labs. It
+// returns a list of Lab structs.
+func buildAll(labs []interface{}) []Lab {
+	all_labs := make([]Lab, 1)
 
-	for lab := range labs {
-		prefix, one_lab := build(labs[lab].(map[string]interface{}))
-		all_labs[prefix] = one_lab
+	for lab := range labs {	
+		one_lab := build(labs[lab].(map[string]interface{}))
+		all_labs = append(all_labs, one_lab)
 	}
 	return all_labs
 }
