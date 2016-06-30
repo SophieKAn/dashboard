@@ -7,6 +7,12 @@ import (
 	"net/http"
 )
 
+// Machine represents a single machine in a lab.
+type Machine struct {
+	hostname int
+	status int
+}
+
 // main opens and reads config.json into a MyJson type, and then proceeds to
 // find the machine statuses for all the labs outlined in the config file.
 func main() {
