@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -16,7 +14,7 @@ type Machine struct {
 // Lab represents one lab. It contains a title and a list of Machines.
 type Lab struct {
 	name string
-	machines []*Machines
+	machines []*Machine
 }
 
 func main() {
@@ -62,16 +60,4 @@ func build(lab map[string]interface{}) (string, []map[string]int) {
 		machines_in_lab = append(machines_in_lab, machine)
 	}
 	return prefix, machines_in_lab
-}
-
-// getConfig takes the name of the configuration file (currently "config.json")
-// attempts to open/read file then unmarshal it into a list of interfaces.
-func getConfig(file_name string) []interface{} {
-	config_file, err := ioutil.ReadFile(file_name)
-	check(err)
-
-	var labs []interface{}
-	err = json.Unmarshal(config_file, &labs)
-	check(err)
-	return labs
 }
