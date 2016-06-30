@@ -13,6 +13,12 @@ type Machine struct {
 	status int
 }
 
+// Lab represents one lab. It contains a title and a list of Machines.
+type Lab struct {
+	name string
+	machines []*Machines
+}
+
 // main opens and reads config.json into a MyJson type, and then proceeds to
 // find the machine statuses for all the labs outlined in the config file.
 func main() {
