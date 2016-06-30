@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 // check takes an error. If the error exists it gets printed, and then the
@@ -25,6 +25,6 @@ func getConfig(file_name string) []interface{} {
 
 	var labs []interface{}
 	err = json.Unmarshal(config_file, &labs)
-	check (err)
+	check(err)
 	return labs
 }

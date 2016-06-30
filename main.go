@@ -2,19 +2,19 @@ package main
 
 import (
 	"net/http"
-	"time"
 	"sync"
+	"time"
 )
 
 // Machine represents a single machine in a lab.
 type Machine struct {
 	hostname int
-	status int
+	status   int
 }
 
 // Lab represents one lab. It contains a title and a list of Machines.
 type Lab struct {
-	name string
+	name     string
 	machines []*Machine
 }
 
@@ -45,7 +45,7 @@ func main() {
 func buildAll(labs []interface{}) []Lab {
 	all_labs := make([]Lab, 1)
 
-	for lab := range labs {	
+	for lab := range labs {
 		one_lab := build(labs[lab].(map[string]interface{}))
 		all_labs = append(all_labs, one_lab)
 	}
