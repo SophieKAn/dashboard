@@ -28,6 +28,13 @@ func main() {
 	lab_frameworks := buildAll(labs)
 
 	/* Update the statuses continually */
+	for {
+		for _, lab := range lab_frameworks {
+			updateStatuses(lab.machines)
+		}
+
+		time.Sleep(5 * time.Minute) // This should be directly configurable eventually.
+	}
 }
 
 /* FUNCTIONS */
