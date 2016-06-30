@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"sync"
 	"time"
 )
 
@@ -16,11 +17,9 @@ const (
 	INACCESSIBLE 2
 )
 
-// operatingSystem takes a hostname(str) and returns what operating system that
+// systemStatus takes a hostname(str) and returns what operating system that
 // machine is running based on which port is successfully used to connect.
-// It returns 'linux', 'windows', or 'inaccessible'.
 func systemStatus(hostname string) int {
-	//try to connect on various ports
 	if accessible(hostname, "***REMOVED***") {
 		return LINUX
 	} else if accessible(hostname, "***REMOVED***") {
@@ -41,4 +40,19 @@ func accessible(hostn string, port string) bool {
 		return true
 	}
 	return false
+}
+
+//
+//
+func updateStatuses(machines []*Machine) {
+	var wg sync.WaitGroup
+	for _, machine := range machines {
+		wg.Add(1)
+
+		go func(m *Machine) {
+			defer wg.Done()
+			// m.UpdateStatus()
+		}(machine)
+	}
+	wg.Wait()
 }

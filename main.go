@@ -6,7 +6,6 @@ package main
 
 import (
 	"net/http"
-	"sync"
 	"time"
 )
 
@@ -34,8 +33,6 @@ func main() {
 	}
 }
 
-/* FUNCTIONS */
-
 //
 //
 func getMachines(labs []interface{}) []*Machine {
@@ -53,20 +50,4 @@ func getMachines(labs []interface{}) []*Machine {
 	}
 
 	return all_machines
-}
-
-//
-//
-func updateStatuses(machines []*Machine) {
-	var wg sync.WaitGroup
-	for _, machine := range machines {
-		wg.Add(1)
-
-		go func(m *Machine) {
-			defer wg.Done()
-			//m.UpdateStatus()
-		}(machine)
-	}
-
-	wg.Wait()
 }
