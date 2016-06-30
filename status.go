@@ -1,14 +1,20 @@
 package main
 
+///////////////
+// Status.go //
+///////////////
+
 import (
 	"fmt"
 	"net"
 	"time"
 )
 
-const LINUX = 0
-const WINDOWS = 1
-const INACCESSIBLE = 2
+const (
+	LINUX        0
+	WINDOWS      1
+	INACCESSIBLE 2
+)
 
 // operatingSystem takes a hostname(str) and returns what operating system that
 // machine is running based on which port is successfully used to connect.
