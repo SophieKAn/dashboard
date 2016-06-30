@@ -5,16 +5,15 @@ package main
 ///////////////
 
 import (
-	"fmt"
 	"net"
 	"sync"
 	"time"
 )
 
 const (
-	LINUX        0
-	WINDOWS      1
-	INACCESSIBLE 2
+	LINUX        = 0
+	WINDOWS      = 1
+	INACCESSIBLE = 2
 )
 
 // systemStatus takes a hostname(str) and returns what operating system that

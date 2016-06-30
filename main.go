@@ -5,6 +5,7 @@ package main
 /////////////
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -16,7 +17,6 @@ type Machine struct {
 }
 
 func main() {
-
 	/* > Start the server and set up framework of labs from config.json */
 	go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
 
@@ -31,21 +31,23 @@ func main() {
 		updateStatuses(all_machines)
 		time.Sleep(5 * time.Minute)
 	}
+
 }
 
-//
-//
+// getMachines takes the unmarshalled config.json and construct a slice of
+// pointers to Machine structs representing all the machines in all the labs.
 func getMachines(labs []interface{}) []*Machine {
-	/* Make a list of Machine structs. */
 	all_machines := make([]*Machine, 1)
 	
 	for lab := range labs {
 		this_lab := labs[lab].(map[string]interface{})
+		prefix := this_lab["prefix"].(string)
 		start := int(this_lab["start"].(float64))
 		end := int(this_lab["end"].(float64))
 
 		for i := start; i <= end; i++ {
-			all_machines = append(all_machines, &Machine{"hostname", 1})
+			hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)
+			all_machines = append(all_machines, &Machine{hostname, 1})
 		}
 	}
 
