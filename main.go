@@ -26,9 +26,22 @@ func main() {
 	/* > Create a struct for each machine. */
 	all_machines := getMachines(labs)
 
+
+	updates := make(chan *Machine)
+	go func (updates chan *Machine) {
+		for {
+			select {
+				case n := <- updates:
+					fmt.Printf("status changed to %d\n", n) //---------------------------------------------* What happens when status change
+			}
+
+
+		}
+	}(updates)
+
 	/* > Update the statuses every 5 minutes. */
 	for {
-		updateStatuses(all_machines)
+		updateStatuses(all_machines, updates)
 		time.Sleep(5 * time.Minute)
 	}
 

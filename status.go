@@ -31,7 +31,6 @@ func getStatus(hostname string) int {
 // accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
 func accessible(hostn string, port string) bool {
-	fmt.Println(hostn)
 	conn, err := net.DialTimeout("tcp", hostn+":"+port, time.Millisecond*50)
 
 	if err == nil {
@@ -44,14 +43,14 @@ func accessible(hostn string, port string) bool {
 
 //
 //
-func updateStatuses(machines []*Machine) {
+func updateStatuses(machines []*Machine, updates chan *Machine) {
 	var wg sync.WaitGroup
 	for _, machine := range machines {
 		wg.Add(1)
 
 		go func(m *Machine) {
 			defer wg.Done()
-			m.UpdateStatus()
+			m.UpdateStatus(updates)
 		}(machine)
 	}
 	wg.Wait()
@@ -59,12 +58,12 @@ func updateStatuses(machines []*Machine) {
 
 //
 //
-func (m *Machine) UpdateStatus() {
+func (m *Machine) UpdateStatus(updates chan *Machine) {
 	old_status := m.status
 	new_status := getStatus(m.hostname)
 
 	if new_status != old_status {
-		// Send out changes
+		updates <- m
 		m.status = new_status
 	}
 }
