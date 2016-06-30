@@ -1,5 +1,9 @@
 package main
 
+/////////////
+// Main.go //
+/////////////
+
 import (
 	"net/http"
 	"sync"
@@ -8,65 +12,47 @@ import (
 
 // Machine represents a single machine in a lab.
 type Machine struct {
-	hostname int
+	hostname string
 	status   int
-}
-
-// Lab represents one lab. It contains a title and a list of Machines.
-type Lab struct {
-	name     string
-	machines []*Machine
 }
 
 func main() {
 
-	/* Start the server and set up framework of labs from config.json */
+	/* > Start the server and set up framework of labs from config.json */
 	go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
 
+	/* > Get lab configuration from config file. */
 	labs := getConfig("./static/config.json")
 
-	/* Set up framework for labs. */
-	lab_frameworks := buildAll(labs)
+	/* > Create a struct for each machines */
+	all_machines := getMachines(labs)
 
-	/* Update the statuses continually */
+	/* > Update the statuses continually */
 	for {
-		for _, lab := range lab_frameworks {
-			updateStatuses(lab.machines)
-		}
-
-		time.Sleep(5 * time.Minute) // This should be directly configurable eventually.
+		updateStatuses(all_machines)
+		time.Sleep(5 * time.Minute)
 	}
 }
 
 /* FUNCTIONS */
 
-// buildAll takes the unmarshaled json and calls build on all the labs. It
-// returns a list of Lab structs.
-func buildAll(labs []interface{}) []Lab {
-	all_labs := make([]Lab, 1)
-
+//
+//
+func getMachines(labs []interface{}) []*Machine {
+	/* Make a list of Machine structs. */
+	all_machines := make([]*Machine, 1)
+	
 	for lab := range labs {
-		one_lab := build(labs[lab].(map[string]interface{}))
-		all_labs = append(all_labs, one_lab)
+		this_lab := labs[lab].(map[string]interface{})
+		start := int(this_lab["start"].(float64))
+		end := int(this_lab["end"].(float64))
+
+		for i := start; i <= end; i++ {
+			all_machines = append(all_machines, &Machine{"hostname", 1})
+		}
 	}
-	return all_labs
-}
 
-// build builds one Lab and returns it, complete with a list of pointers to all
-// of the machines in the lab.
-func build(lab map[string]interface{}) Lab {
-	var new_lab Lab
-	new_lab.name = lab["prefix"].(string)
-
-	machines_in_lab := make([]*Machine, 1)
-	start := int(lab["start"].(float64))
-	end := int(lab["end"].(float64))
-	for i := start; i <= end; i++ {
-		machines_in_lab = append(machines_in_lab, &Machine{i, 1})
-	}
-	new_lab.machines = machines_in_lab
-
-	return new_lab
+	return all_machines
 }
 
 //
