@@ -26,6 +26,8 @@ func main() {
 
 	/* Set up framework for labs. */
 	lab_frameworks := buildAll(labs)
+
+	/* Update the statuses continually */
 }
 
 /* FUNCTIONS */
@@ -57,4 +59,20 @@ func build(lab map[string]interface{}) Lab {
 	new_lab.machines = machines_in_lab
 
 	return new_lab
+}
+
+//
+//
+func updateStatuses(machines []*Machine) {
+	var wg sync.WaitGroup
+	for _, machine := range machines {
+		wg.Add(1)
+
+		go func(m *Machine) {
+			defer wg.Done()
+			//m.UpdateStatus()
+		}(machine)
+	}
+
+	wg.Wait()
 }
