@@ -22,8 +22,9 @@ func main() {
 	/* Start the server and set up framework of labs from config.json */
 	go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
 
-	/* Get initial status of every machine */
 	labs := getConfig("./static/config.json")
+
+
 	lab_statuses := buildAll(labs)
 
 	/* update the status once */
