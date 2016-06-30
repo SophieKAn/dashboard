@@ -19,13 +19,10 @@ type Lab struct {
 	machines []*Machines
 }
 
-// main opens and reads config.json into a MyJson type, and then proceeds to
-// find the machine statuses for all the labs outlined in the config file.
 func main() {
 
-	/* Start the server set up framework of labs from config.json */
-	http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
-	//check(err)
+	/* Start the server and set up framework of labs from config.json */
+	go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
 
 	/* Get initial status of every machine */
 	labs := getConfig("./static/config.json")
