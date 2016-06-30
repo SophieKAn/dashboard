@@ -45,20 +45,19 @@ func buildAll(labs []interface{}) map[string][]map[string]int {
 	return all_labs
 }
 
-// build gets called on one lab. It calls systemStatus on each machine in the
-// lab to obtain the initial statuses of all the machines.
-func build(lab map[string]interface{}) (string, []map[string]int) {
-	prefix := lab["prefix"].(string)
+// build builds one Lab and returns it, complete with a list of pointers to all
+// of the machines in the lab.
+func build(lab map[string]interface{}) Lab {
+	var new_lab Lab
+	new_lab.name = lab["prefix"].(string)
+
+	machines_in_lab := make([]*Machine, 1)
 	start := int(lab["start"].(float64))
 	end := int(lab["end"].(float64))
-	machines_in_lab := make([]map[string]int, 1)
-
 	for i := start; i <= end; i++ {
-		hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)
-
-		machine := make(map[string]int)
-		machine["machine"], machine["status"] = i, systemStatus(hostname)
-		machines_in_lab = append(machines_in_lab, machine)
+		machines_in_lab = append(machines_in_lab, &Machine{i, 1})
 	}
-	return prefix, machines_in_lab
+	new_lab.machines = machines_in_lab
+
+	return new_lab
 }
