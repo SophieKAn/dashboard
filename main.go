@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"time"
+	"sync"
 )
 
 // Machine represents a single machine in a lab.
