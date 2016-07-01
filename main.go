@@ -26,25 +26,19 @@ func main() {
 	/* > Create a struct for each machine. */
 	all_machines := getMachines(labs)
 
-
+	/* > Create channel to receive status updates. */
 	updates := make(chan *Machine)
 	go func (updates chan *Machine) {
 		for {
-			select {
-				case n := <- updates:
-					fmt.Printf("status changed to %d\n", n) //---------------------------------------------* What happens when status change
-			}
-
-
+			<- updates // What happens when it changes?? ---------------------------------------------*
 		}
 	}(updates)
 
 	/* > Update the statuses every 5 minutes. */
 	for {
 		updateStatuses(all_machines, updates)
-		time.Sleep(5 * time.Minute)
+		time.Sleep(1 * time.Second)
 	}
-
 }
 
 // getMachines takes the unmarshalled config.json and construct a slice of
@@ -53,10 +47,9 @@ func getMachines(labs []interface{}) []*Machine {
 	all_machines := make([]*Machine, 0)
 
 	for lab := range labs {
-		this_lab := labs[lab].(map[string]interface{})
-		prefix := this_lab["prefix"].(string)
-		start := int(this_lab["start"].(float64))
-		end := int(this_lab["end"].(float64))
+		alab := labs[lab].(map[string]interface{})
+		prefix := alab["prefix"].(string)
+		start, end := int(alab["start"].(float64)), int(alab["end"].(float64))
 
 		for i := start; i <= end; i++ {
 			hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)

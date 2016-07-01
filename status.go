@@ -8,7 +8,6 @@ import (
 	"net"
 	"sync"
 	"time"
-	"fmt"
 )
 
 const (
@@ -63,7 +62,7 @@ func (m *Machine) UpdateStatus(updates chan *Machine) {
 	new_status := getStatus(m.hostname)
 
 	if new_status != old_status {
-		updates <- m
 		m.status = new_status
+		updates <- m
 	}
 }
