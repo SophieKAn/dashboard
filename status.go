@@ -15,8 +15,10 @@ const (
 	WINDOWS      = 1
 	INACCESSIBLE = 2
 )
-//
-//
+
+// getStatus takes a hostname and checks whether it is available on port ***REMOVED***
+// or ***REMOVED*** (linux and windows respectively). Otherwise it is labeled
+// inaccessible.
 func getStatus(hostname string) int {
 	if accessible(hostname, "***REMOVED***") {
 		return LINUX
@@ -40,8 +42,9 @@ func accessible(hostn string, port string) bool {
 	}
 }
 
-//
-//
+// updateStatuses takes the list of Machine pointers and iterates through them
+// using goroutines to call Update for each one. It waits until all goroutines
+// are finished before returning.
 func updateStatuses(machines []*Machine, updates chan *Machine) {
 	var wg sync.WaitGroup
 	for _, machine := range machines {
@@ -49,15 +52,16 @@ func updateStatuses(machines []*Machine, updates chan *Machine) {
 
 		go func(m *Machine) {
 			defer wg.Done()
-			m.UpdateStatus(updates)
+			m.Update(updates)
 		}(machine)
 	}
 	wg.Wait()
 }
 
-//
-//
-func (m *Machine) UpdateStatus(updates chan *Machine) {
+// Update takes the updates channel. For the Machine it was called on, it
+// checks whether the status has changed, and sends any changes on the updates
+// channel, and changes the status.
+func (m *Machine) Update(updates chan *Machine) {
 	old_status := m.status
 	new_status := getStatus(m.hostname)
 
