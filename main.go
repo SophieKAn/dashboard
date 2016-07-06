@@ -6,11 +6,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/websocket"
 	"net/http"
 	"time"
 )
 
 const updateWait = 1 * time.Second
+
+var upgrader = websocket.Upgrader{}
 
 // A Machine represents one system.
 type Machine struct {
@@ -22,9 +25,13 @@ type Machine struct {
 // channel for receiving updates, and then updates system statuses every 5 min.
 func main() {
 
-	/* > Start the server in its own Goroutine. */
-	go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.HandleFunc("/upd", ServeUpdates)
 
+	/* > Start the server in its own Goroutine. */
+	go http.ListenAndServe("localhost:8080", nil)
+
+	time.Sleep(5 * time.Minute)
 	/* > Get lab configuration from config file. */
 	labConfig := GetConfig("./static/config.json")
 
@@ -45,6 +52,16 @@ func main() {
 		UpdateStatuses(allMachines, updatesChannel)
 		time.Sleep(updateWait)
 	}
+}
+
+func ServeUpdates(w http.ResponseWriter, r *http.Request) {
+	ws, err := upgrader.Upgrade(w, r, nil)
+	Check(err)
+	defer ws.Close()
+
+	err = ws.WriteMessage(websocket.TextMessage, []byte("Hello, world."))
+	Check(err)
+
 }
 
 // getMachines takes the unmarshalled config.json and construct a slice of
