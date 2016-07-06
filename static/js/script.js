@@ -20,6 +20,7 @@ function initializePage(url) {
             createLabMachine(cs_lab, i);
           }
         });
+				updater();
       }
     }
   }
@@ -32,4 +33,16 @@ function createLabMachine(cs_lab, i) {
   lab_machine.className = "lab_machine";
   lab_machine.innerText = i;
   cs_lab.appendChild(lab_machine);
+}
+
+
+
+function updater() {
+	var conn = new WebSocket("ws://localhost:8080/upd");
+	conn.onclose = function(evt) {
+		console.log("Connection closed");
+	}
+	conn.onmessage = function(evt) {
+		console.log(evt.data);
+	}
 }
