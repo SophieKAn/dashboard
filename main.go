@@ -24,41 +24,41 @@ func main() {
 	go http.ListenAndServe(":8080", http.FileServer(http.Dir("./static")))
 
 	/* > Get lab configuration from config file. */
-	lab_config := getConfig("./static/config.json")
+	labConfig := GetConfig("./static/config.json")
 
 	/* > Create a struct for each machine. */
-	all_machines := getMachines(lab_config)
+	allMachines := GetMachines(labConfig)
 
 	/* > Create channel to receive status updates. */
-	updates := make(chan *Machine)
+	updatesChannel := make(chan *Machine)
 
-	go func(updates chan *Machine) {
+	go func(updatesChannel chan *Machine) {
 		for {
-			fmt.Println(<-updates)
+			fmt.Println(<-updatesChannel)
 		}
-	}(updates)
+	}(updatesChannel)
 
 	/* > Update the statuses every second. */
 	for {
-		updateStatuses(all_machines, updates)
+		UpdateStatuses(allMachines, updatesChannel)
 		time.Sleep(1 * time.Second)
 	}
 }
 
 // getMachines takes the unmarshalled config.json and construct a slice of
 // pointers to Machine structs representing all the machines in all the labs.
-func getMachines(labs []interface{}) []*Machine {
-	all_machines := make([]*Machine, 0)
+func GetMachines(labs []interface{}) []*Machine {
+	allMachines := make([]*Machine, 0)
 
 	for lab := range labs {
-		a_lab := labs[lab].(map[string]interface{})
-		prefix := a_lab["prefix"].(string)
-		start, end := int(a_lab["start"].(float64)), int(a_lab["end"].(float64))
+		aLab := labs[lab].(map[string]interface{})
+		prefix := aLab["prefix"].(string)
+		start, end := int(aLab["start"].(float64)), int(aLab["end"].(float64))
 
 		for i := start; i <= end; i++ {
 			hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)
-			all_machines = append(all_machines, &Machine{hostname, 2})
+			allMachines = append(allMachines, &Machine{hostname, 2})
 		}
 	}
-	return all_machines
+	return allMachines
 }
