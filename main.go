@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const updateWait = 1 * time.Second
+
 // A Machine represents one system.
 type Machine struct {
 	hostname string
@@ -41,7 +43,7 @@ func main() {
 	/* > Update the statuses every second. */
 	for {
 		UpdateStatuses(allMachines, updatesChannel)
-		time.Sleep(1 * time.Second)
+		time.Sleep(updateWait)
 	}
 }
 
