@@ -34,14 +34,14 @@ func main() {
 
 	go func(updates chan *Machine) {
 		for {
-			<-updates
+			fmt.Println(<-updates)
 		}
 	}(updates)
 
-	/* > Update the statuses every 5 minutes. */
+	/* > Update the statuses every second. */
 	for {
 		updateStatuses(all_machines, updates)
-		time.Sleep(5 * time.Minute)
+		time.Sleep(1 * time.Second)
 	}
 }
 
