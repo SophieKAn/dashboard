@@ -17,7 +17,7 @@ const (
 	INACCESSIBLE = 2
 )
 
-// getStatus takes a hostname and checks whether it is available on port ***REMOVED***
+// getStatus takes a Hostname and checks whether it is available on port ***REMOVED***
 // or ***REMOVED*** (linux and windows respectively). Otherwise it is labeled
 // inaccessible.
 func GetStatus(hostname string) int {
@@ -33,7 +33,7 @@ func GetStatus(hostname string) int {
 // accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
 func Accessible(hostn string, port string) bool {
-	conn, err := net.DialTimeout("tcp", hostn+":"+port, 50 * time.Millisecond)
+	conn, err := net.DialTimeout("tcp", hostn + ":" + port, 1 * time.Second)
 
 	if err == nil {
 		conn.Close()
@@ -64,10 +64,10 @@ func UpdateStatuses(machines []*Machine, updatesChannel chan *Machine) {
 // checks whether the status has changed, and sends any changes on the updates
 // channel, and changes the status.
 func (m *Machine) Update(updatesChannel chan *Machine) {
-	newStatus := GetStatus(m.hostname)
+	newStatus := GetStatus(m.Hostname)
 
-	if newStatus != m.status {
-		m.status = newStatus
+	if newStatus != m.Status {
+		m.Status = newStatus
 		updatesChannel <- m
 	}
 }

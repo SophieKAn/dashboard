@@ -13,7 +13,7 @@ function initializePage(url) {
           cs_lab.className = "cs_lab";
           let lab_title = document.createElement('header');
           lab_title.className = "lab_title";
-          lab_title.innerText = l.title;
+          lab_title.innerText = l.prefix;
           cs_lab.appendChild(lab_title);
           widget.appendChild(cs_lab);
           for (i = l.start; i <= l.end; i++) {
@@ -31,6 +31,7 @@ function initializePage(url) {
 function createLabMachine(cs_lab, i) {
   let lab_machine = document.createElement('div');
   lab_machine.className = "lab_machine";
+	lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i);
   lab_machine.innerText = i;
   cs_lab.appendChild(lab_machine);
 }
@@ -43,6 +44,24 @@ function updater() {
 		console.log("Connection closed");
 	}
 	conn.onmessage = function(evt) {
-		console.log(evt.data);
+		changeStatus(JSON.parse(evt.data));
 	}
+}
+
+
+function changeStatus(machineData) {
+	let el = document.getElementById(machineData.Hostname);
+	if (machineData.Status == 0) {
+		el.style.background = "MediumSeaGreen";
+	} else if (machineData.Status == 1) {
+		el.style.background = "MediumSlateBlue";
+	} else {
+		el.style.background = "red";
+	}
+}
+
+function pad(n) {
+	// http://stackoverflow.com/a/8089938/6279238
+	// only for positive integers
+	return (n < 10) ? ("0" + n.toString()) : String(n);
 }
