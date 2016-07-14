@@ -31,7 +31,7 @@ function initializePage(url) {
 function createLabMachine(cs_lab, i) {
   let lab_machine = document.createElement('div');
   lab_machine.className = "lab_machine";
-	lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i);
+	lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + ".***REMOVED***";
   lab_machine.innerText = i;
   cs_lab.appendChild(lab_machine);
 }
@@ -44,20 +44,25 @@ function updater() {
 		console.log("Connection closed");
 	}
 	conn.onmessage = function(evt) {
-		changeStatus(JSON.parse(evt.data));
+		let machineData = JSON.parse(evt.data);
+		console.log(machineData);
+		console.log("updating");
+		changeStatus(machineData);
 	}
 }
 
 
 function changeStatus(machineData) {
-	let el = document.getElementById(machineData.Hostname);
-	if (machineData.Status == 0) {
-		el.style.background = "MediumSeaGreen";
-	} else if (machineData.Status == 1) {
-		el.style.background = "MediumSlateBlue";
-	} else {
-		el.style.background = "red";
-	}
+  machineData.forEach(m => {
+		let el = document.getElementById(m.hostname);
+			if (m.status == 0) {
+				el.style.background = "MediumSeaGreen";
+			} else if (m.status == 1) {
+				el.style.background = "MediumSlateBlue";
+			} else {
+				el.style.background = "red";
+			}
+	});
 }
 
 function pad(n) {

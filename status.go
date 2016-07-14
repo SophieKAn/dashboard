@@ -46,15 +46,16 @@ func Accessible(hostn string, port string) bool {
 // updateStatuses takes the list of Machine pointers and iterates through them
 // using goroutines to call Update for each one. It waits until all goroutines
 // are finished before returning.
-func UpdateStatuses(machines []*Machine, updatesChannel chan *Machine) {
+func UpdateStatuses(machines []*Machine) {
 	fmt.Println("updating")
+
 	var wg sync.WaitGroup
 	for _, machine := range machines {
 		wg.Add(1)
 
 		go func(m *Machine) {
 			defer wg.Done()
-			m.Update(updatesChannel)
+			m.Update()
 		}(machine)
 	}
 	wg.Wait()
@@ -63,11 +64,10 @@ func UpdateStatuses(machines []*Machine, updatesChannel chan *Machine) {
 // Update takes the updates channel. For the Machine it was called on, it
 // checks whether the status has changed, and sends any changes on the updates
 // channel, and changes the status.
-func (m *Machine) Update(updatesChannel chan *Machine) {
-	newStatus := GetStatus(m.Hostname)
+func (m *Machine) Update() {
+	newStatus := GetStatus(m.hostname)
 
-	if newStatus != m.Status {
-		m.Status = newStatus
-		updatesChannel <- m
+	if newStatus != m.status {
+		m.status = newStatus
 	}
 }

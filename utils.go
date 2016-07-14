@@ -8,36 +8,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 )
 
 // check takes an error. If the error exists it gets printed, and then the
 // program exits. If it is nil, nothing happens.
-func Check(e error) bool {
+func Check(e error) {
 	if e != nil {
 		fmt.Printf("Error: %v", e)
-		os.Exit(1)
 	}
-	return true
 }
 
 // getConfig takes the name of the configuration file (currently "config.json")
 // and attempts to open/read file then unmarshal it into a list of interfaces.
 func GetConfig(fileName string) []interface{} {
-	configFile, err := ioutil.ReadFile(fileName)
-	Check(err)
+	/* > Open config file and check for errors. */
+	configFile, err := ioutil.ReadFile(fileName); Check(err)
 
+	/* Unmarshal the config file as a JSON. */
 	var labs []interface{}
-	err = json.Unmarshal(configFile, &labs)
-	Check(err)
+	err = json.Unmarshal(configFile, &labs); Check(err)
+
 	return labs
 }
 
 // getMachines takes the unmarshalled config.json and constructs a slice of
 // pointers to Machine structs representing all the machines indicated in the
 // config.
-func GetMachines(labs []interface{}) []*Machine {
-	allMachines := make([]*Machine, 0)
+func GetMachines(labs []interface{}, allMachines []*Machine) []*Machine {
 
 	for lab := range labs {
 		aLab := labs[lab].(map[string]interface{})
@@ -50,4 +47,4 @@ func GetMachines(labs []interface{}) []*Machine {
 		}
 	}
 	return allMachines
-} 
+}

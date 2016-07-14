@@ -5,76 +5,55 @@ package main
 /////////////
 
 import (
-	//"fmt"
-	"github.com/gorilla/websocket"
 	"encoding/json"
+	"github.com/gorilla/websocket"
 	"net/http"
-	"strings"
 	"time"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader websocket.Upgrader
 
 type Machine struct {
-	Hostname string
-	Status   int
+	hostname string
+	status   int
 }
 
-// main starts the server, gets all the lab info from config.json, sets up a
-// channel for receiving updates, and then updates system statuses every 5 min.
+//
+//
 func main() {
-
-	/* > Define handlers. */
-	http.Handle("/", http.FileServer(http.Dir("./static")))
-	http.HandleFunc("/upd", ServeUpdates)
-
-	/* > Start the server. */
-	http.ListenAndServe("localhost:8080", nil)
-}
-
-
-
-
-func ServeUpdates(w http.ResponseWriter, r *http.Request) {
-
-	/* > Open the websocket connection. */
-	ws, err := upgrader.Upgrade(w, r, nil)
-	Check(err); defer ws.Close()
-
-
 	/* > Get lab configuration from config file. */
 	labConfig := GetConfig("./static/config.json")
 
 	/* > Create a struct for each machine. */
-	allMachines := GetMachines(labConfig)
+	var allMachines []*Machine
+	allMachines = GetMachines(labConfig, allMachines)
 
+	/* > Establish handlers. */
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
+		ServeUpdates(w, r, allMachines)
+	})
 
-	/* > Create channel to receive status updates. */
-	updatesChannel := make(chan *Machine)
-
-	go func(updatesChannel chan *Machine ) {
+	/* > Update statuses forever at the given pace. */
+	go func() {
 		for {
-			sendUpdate(<-updatesChannel, ws)
-		}
-	}(updatesChannel)
+			UpdateStatuses(allMachines)
+			time.Sleep(5 * time.Second) }
+	}()
 
-	for {
-		UpdateStatuses(allMachines, updatesChannel)
-		time.Sleep(10 * time.Second)
-	}
+	/* Start the server. */
+	http.ListenAndServe("localhost:8080", nil)
 }
 
-
-
-
-
 //
 //
-func sendUpdate(machine *Machine, ws *websocket.Conn) {
-	machine.Hostname = strings.TrimSuffix(machine.Hostname, ".***REMOVED***")
-	jmsg, err := json.Marshal(machine)
-	Check(err)
+func ServeUpdates(w http.ResponseWriter, r *http.Request, allMachines []*Machine) {
+	/* > Open the websocket connection. */
+	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
-	err = ws.WriteMessage(websocket.TextMessage, jmsg)
-	Check(err)
+	/* > Marshal allMachines into a JSON. */
+	jsn, err := json.Marshal(allMachines); Check(err)
+
+	/* > Send message to client */
+	err = ws.WriteMessage(websocket.TextMessage, jsn); Check(err)
 }
