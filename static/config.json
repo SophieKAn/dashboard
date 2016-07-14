@@ -1,42 +1,35 @@
 [
 	{
-		"title": "CF 162",
     "prefix": "***REMOVED***",
     "start": 0,
     "end": 25
   },
   {
-    "title": "CF 164",
     "prefix": "***REMOVED***",
     "start": 0,
     "end": 25
   },
   {
-    "title": "CF 414",
     "prefix": "***REMOVED***",
     "start": 1,
     "end": 20
   },
   {
-    "title": "CF 416",
     "prefix": "***REMOVED***",
     "start": 0,
     "end": 21
   },
   {
-    "title": "CF 418",
     "prefix": "***REMOVED***",
     "start": 1,
     "end": 20
   },
   {
-    "title": "CF 405",
     "prefix": "***REMOVED***",
     "start": 1,
     "end": 25
   },
   {
-    "title": "Linux Machines",
     "prefix": "linux",
     "start": 1,
     "end": 12
