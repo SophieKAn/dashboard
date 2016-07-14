@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 )
 
-// check takes an error. If the error exists it gets printed, and then the
+// Check takes an error. If the error exists it gets printed, and then the
 // program exits. If it is nil, nothing happens.
 func Check(e error) {
 	if e != nil {
@@ -18,7 +18,7 @@ func Check(e error) {
 	}
 }
 
-// getConfig takes the name of the configuration file (currently "config.json")
+// GetConfig takes the name of the configuration file (currently "config.json")
 // and attempts to open/read file then unmarshal it into a list of interfaces.
 func GetConfig(fileName string) []interface{} {
 	/* > Open config file and check for errors. */
@@ -31,7 +31,7 @@ func GetConfig(fileName string) []interface{} {
 	return labs
 }
 
-// getMachines takes the unmarshalled config.json and constructs a slice of
+// GetMachines takes the unmarshalled config.json and constructs a slice of
 // pointers to Machine structs representing all the machines indicated in the
 // config.
 func GetMachines(labs []interface{}, allMachines []*Machine) []*Machine {

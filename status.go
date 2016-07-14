@@ -17,9 +17,9 @@ const (
 	INACCESSIBLE = 2
 )
 
-// getStatus takes a Hostname and checks whether it is available on port ***REMOVED***
-// or ***REMOVED*** (linux and windows respectively). Otherwise it is labeled
-// inaccessible.
+// GetStatus takes a Hostname and checks whether it is available on port ***REMOVED***
+// or ***REMOVED*** (linux and windows respectively). If not accessible on either port, 
+// that host is deemed inaccesssible.
 func GetStatus(hostname string) int {
 	if Accessible(hostname, "***REMOVED***") {
 		return LINUX
@@ -30,7 +30,7 @@ func GetStatus(hostname string) int {
 	}
 }
 
-// accessible takes a hostname and a port number and tries to establish a
+// Accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
 func Accessible(hostn string, port string) bool {
 	conn, err := net.DialTimeout("tcp", hostn + ":" + port, 1 * time.Second)
@@ -43,7 +43,7 @@ func Accessible(hostn string, port string) bool {
 	}
 }
 
-// updateStatuses takes the list of Machine pointers and iterates through them
+// UpdateStatuses takes the list of Machine pointers and iterates through them
 // using goroutines to call Update for each one. It waits until all goroutines
 // are finished before returning.
 func UpdateStatuses(machines []*Machine) {
