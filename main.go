@@ -16,8 +16,7 @@ type Machine struct {
 	status   int
 }
 
-//
-//
+
 func main() {
 
 	labConfig := GetConfig("./static/config.json")
@@ -38,14 +37,11 @@ func main() {
 	}
 }
 
-//
-//
+
 func ServeUpdates(w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
 	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
-	/* > Marshal allMachines into a JSON. */
-	//jsn, err := json.Marshal(allMachine); Check(err)
 	alist := [2]string{"P","T"}
 	jsn, err := json.Marshal(alist); Check(err)
 
