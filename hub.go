@@ -2,7 +2,7 @@
 
 package main
 
-type hub struct {
+type Hub struct {
 	connections map[*Conn]bool
 	broadcast chan []byte
 	register chan *Conn
