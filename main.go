@@ -30,7 +30,7 @@ func main() {
 	go http.ListenAndServe("localhost:8080", nil)
 
 	for {
-		UpdateStatuses(allMachines)
+		c := UpdateStatuses(allMachines)
 		time.Sleep(5 * time.Second)
 	}
 }
