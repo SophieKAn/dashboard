@@ -38,11 +38,10 @@ func main() {
 	go http.ListenAndServe("localhost:8080", nil)
 
 	/* > Update statuses forever at the given pace. */
-	go func() {
-		for {
-			UpdateStatuses(allMachines)
-			time.Sleep(5 * time.Second) }
-	}()
+	for {
+		UpdateStatuses(allMachines)
+		time.Sleep(5 * time.Second) }
+	}
 }
 
 //
