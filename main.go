@@ -6,7 +6,7 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gorilla/websocket"
+	//"github.com/gorilla/websocket"
 	"net/http"
 	"time"
 )
@@ -33,8 +33,8 @@ func main() {
 
 	for {
 		c := UpdateStatuses(allMachines)
-		for upd := range c {
-			updates = append(updates, upd)
+		for machine := range c {
+			updates = append(updates, machine)
 		}
 
 		message, err := json.Marshal(updates); Check(err)
@@ -49,9 +49,5 @@ func ServeUpdates(w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
 	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
-	alist := [2]string{"P","T"}
-	jsn, err := json.Marshal(alist); Check(err)
-
-	/* > Send message to client */
-	err = ws.WriteMessage(websocket.TextMessage, jsn); Check(err)
+	hub.register <- &Conn{ws, make(chan []byte)}
 }

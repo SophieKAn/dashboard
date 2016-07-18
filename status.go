@@ -49,18 +49,19 @@ func Accessible(hostn string, port string) bool {
 func UpdateStatuses(machines []*Machine) chan *Machine{
 	fmt.Println("updating")
 	out := make(chan *Machine)
+	go func(chan *Machine) {
+		var wg sync.WaitGroup
+		for _, machine := range machines {
+			wg.Add(1)
 
-	var wg sync.WaitGroup
-	for _, machine := range machines {
-		wg.Add(1)
-
-		go func(m *Machine) {
-			defer wg.Done()
-			m.Update(out)
-		}(machine)
-	}
-	wg.Wait()
-	close(out)
+			go func(m *Machine) {
+				defer wg.Done()
+				m.Update(out)
+			}(machine)
+		}
+		wg.Wait()
+		close(out)
+	}(out)
 	return out
 }
 
