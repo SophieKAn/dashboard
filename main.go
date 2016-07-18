@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/json"
-	//"github.com/gorilla/websocket"
 	"net/http"
 	"time"
 )
@@ -40,6 +39,7 @@ func main() {
 		message, err := json.Marshal(updates); Check(err)
 		hub.broadcast <- message
 		updates = nil
+
 		time.Sleep(5 * time.Second)
 	}
 }
