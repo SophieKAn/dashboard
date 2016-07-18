@@ -3,10 +3,8 @@
 package main
 
 import (
-	"bytes"
-	"log"
-	"net/http"
 	"time"
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -14,12 +12,19 @@ const (
 	pingPeriod = 20 * time.Second
 )
 
-var upgrader = websocket.Upgrader
+var upgrader = websocket.Upgrader{}
 
 type Conn struct {
 	ws   *websocket.Conn
 	send chan []byte
 }
+
+// write writes a message with the given message type and payload
+func (c *Conn) write(mt int, payload []byte) error {
+	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+	return c.ws.WriteMessage(mt, payload)
+}
+
 
 // writePump pumps messages from the hub to the websocket connection.
 func (c *Conn) writePump() {
