@@ -19,6 +19,8 @@ type Machine struct {
 
 func main() {
 
+	var updates []*Machine
+
 	labConfig := GetConfig("./static/config.json")
 	allMachines := GetMachines(labConfig)
 
@@ -31,6 +33,13 @@ func main() {
 
 	for {
 		c := UpdateStatuses(allMachines)
+		for upd := range c {
+			updates = append(updates, upd)
+		}
+
+		message, err := json.Marshal(updates); Check(err)
+		hub.broadcast <- message
+		updates = nil
 		time.Sleep(5 * time.Second)
 	}
 }
