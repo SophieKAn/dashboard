@@ -27,10 +27,8 @@ func main() {
 
 	go hub.run()
 
-	/* Start the server. */
 	go http.ListenAndServe("localhost:8080", nil)
 
-	/* > Update statuses forever at the given pace. */
 	for {
 		UpdateStatuses(allMachines)
 		time.Sleep(5 * time.Second)
