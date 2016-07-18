@@ -34,15 +34,15 @@ func main() {
 		ServeUpdates(w, r, allMachines)
 	})
 
+	/* Start the server. */
+	go http.ListenAndServe("localhost:8080", nil)
+
 	/* > Update statuses forever at the given pace. */
 	go func() {
 		for {
 			UpdateStatuses(allMachines)
 			time.Sleep(5 * time.Second) }
 	}()
-
-	/* Start the server. */
-	http.ListenAndServe("localhost:8080", nil)
 }
 
 //
