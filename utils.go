@@ -34,8 +34,8 @@ func GetConfig(fileName string) []interface{} {
 // GetMachines takes the unmarshalled config.json and constructs a slice of
 // pointers to Machine structs representing all the machines indicated in the
 // config.
-func GetMachines(labs []interface{}, allMachines []*Machine) []*Machine {
-
+func GetMachines(labs []interface{}) []*Machine {
+	var allMachines []*Machine
 	for lab := range labs {
 		aLab := labs[lab].(map[string]interface{})
 		prefix := aLab["prefix"].(string)

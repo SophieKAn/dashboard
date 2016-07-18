@@ -25,8 +25,7 @@ func main() {
 	labConfig := GetConfig("./static/config.json")
 
 	/* > Create a struct for each machine. */
-	var allMachines []*Machine
-	allMachines = GetMachines(labConfig, allMachines)
+	allMachines := GetMachines(labConfig)
 
 	/* > Establish handlers. */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
@@ -40,7 +39,7 @@ func main() {
 	/* > Update statuses forever at the given pace. */
 	for {
 		UpdateStatuses(allMachines)
-		time.Sleep(5 * time.Second) }
+		time.Sleep(5 * time.Second)
 	}
 }
 
