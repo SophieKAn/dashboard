@@ -21,17 +21,12 @@ type Machine struct {
 //
 //
 func main() {
-	/* > Get lab configuration from config file. */
-	labConfig := GetConfig("./static/config.json")
 
-	/* > Create a struct for each machine. */
+	labConfig := GetConfig("./static/config.json")
 	allMachines := GetMachines(labConfig)
 
-	/* > Establish handlers. */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
-	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
-		ServeUpdates(w, r, allMachines)
-	})
+	http.HandleFunc("/upd", ServeUpdates)
 
 	/* Start the server. */
 	go http.ListenAndServe("localhost:8080", nil)
@@ -45,12 +40,14 @@ func main() {
 
 //
 //
-func ServeUpdates(w http.ResponseWriter, r *http.Request, allMachines []*Machine) {
+func ServeUpdates(w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
 	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
 	/* > Marshal allMachines into a JSON. */
-	jsn, err := json.Marshal(allMachines); Check(err)
+	//jsn, err := json.Marshal(allMachine); Check(err)
+	alist := [2]string{"P","T"}
+	jsn, err := json.Marshal(alist); Check(err)
 
 	/* > Send message to client */
 	err = ws.WriteMessage(websocket.TextMessage, jsn); Check(err)
