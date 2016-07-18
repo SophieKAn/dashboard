@@ -11,8 +11,6 @@ import (
 	"time"
 )
 
-var upgrader websocket.Upgrader
-
 type Machine struct {
 	hostname string
 	status   int
