@@ -26,6 +26,8 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/upd", ServeUpdates)
 
+	go hub.run()
+
 	/* Start the server. */
 	go http.ListenAndServe("localhost:8080", nil)
 
