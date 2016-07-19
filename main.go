@@ -17,18 +17,16 @@ type Machine struct {
 
 
 func main() {
-
-	var updates []*Machine
-
 	labConfig := GetConfig("./static/config.json")
 	allMachines := GetMachines(labConfig)
 
-	http.Handle("/", http.FileServer(http.Dir("./static")))
-	http.HandleFunc("/upd", ServeUpdates)
-
 	go hub.run()
 
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.HandleFunc("/upd", ServeUpdates)
 	go http.ListenAndServe("localhost:8080", nil)
+
+	var updates []*Machine
 
 	for {
 		for machine := range UpdateStatuses(allMachines) {
