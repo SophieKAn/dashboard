@@ -59,7 +59,7 @@ function changeStatus(machineData) {
 			} else if (m.status == 1) {
 				el.style.background = "MediumSlateBlue";
 			} else {
-				el.style.background = "red";
+				el.style.background = "gray";
 			}
 	});
 }
