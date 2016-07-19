@@ -29,7 +29,7 @@ func main() {
 	/* > Start the server */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
-		ServeUpdates(hub, w, r)
+		ServeUpdates(hub, allMachines, w, r)
 	})
 
 	go http.ListenAndServe("localhost:8080", nil)
@@ -54,11 +54,15 @@ func main() {
 }
 
 
-func ServeUpdates(hub *Hub, w http.ResponseWriter, r *http.Request) {
+func ServeUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
 	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
 	client := &Client{hub, ws, make(chan []byte)}
 	hub.register <-client
+	go func() {
+		data, _ := json.Marshal(allMachines)
+		client.send <- data
+	}()
 	client.writePump()
 }
