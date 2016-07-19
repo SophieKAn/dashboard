@@ -53,5 +53,7 @@ func ServeUpdates(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
 	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
-	hub.register <- &Client{hub, ws, make(chan []byte)}
+	client := &Client{hub, ws, make(chan []byte)}
+	hub.register <-client
+	client.writePump()
 }
