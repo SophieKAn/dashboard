@@ -22,11 +22,15 @@ func main() {
 	allMachines := GetMachines(labConfig)
 
 	/* > Run the Hub */
+	hub := newHub()
 	go hub.run()
 
 	/* > Start the server */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
-	http.HandleFunc("/upd", ServeUpdates)
+	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
+		ServeUpdates(hub, w, r)
+	})
+
 	go http.ListenAndServe("localhost:8080", nil)
 
 	/* > Update forever */
@@ -45,9 +49,9 @@ func main() {
 }
 
 
-func ServeUpdates(w http.ResponseWriter, r *http.Request) {
+func ServeUpdates(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
 	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
 
-	hub.register <- &Conn{ws, make(chan []byte)}
+	hub.register <- &Client{hub, ws, make(chan []byte)}
 }
