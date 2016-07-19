@@ -31,8 +31,7 @@ func main() {
 	go http.ListenAndServe("localhost:8080", nil)
 
 	for {
-		c := UpdateStatuses(allMachines)
-		for machine := range c {
+		for machine := range UpdateStatuses(allMachines) {
 			updates = append(updates, machine)
 		}
 
