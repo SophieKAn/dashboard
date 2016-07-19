@@ -2,8 +2,13 @@
 
 package main
 
+///////////////
+// Client.go //
+///////////////
+
 import (
 	"time"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -15,8 +20,8 @@ const (
 var upgrader = websocket.Upgrader{}
 
 type Client struct {
-	hub *Hub
-	conn   *websocket.Conn
+	hub  *Hub
+	conn *websocket.Conn
 	send chan []byte
 }
 
