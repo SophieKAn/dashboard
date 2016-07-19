@@ -69,10 +69,10 @@ func UpdateStatuses(machines []*Machine) chan *Machine{
 // checks whether the status has changed, and sends any changes on the updates
 // channel, and changes the status.
 func (m *Machine) Update(out chan *Machine) {
-	newStatus := GetStatus(m.hostname)
+	newStatus := GetStatus(m.Hostname)
 
-	if newStatus != m.status {
-		m.status = newStatus
+	if newStatus != m.Status {
+		m.Status = newStatus
 		out <- m
 	}
 }

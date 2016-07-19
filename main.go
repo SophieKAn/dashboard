@@ -8,11 +8,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+	"fmt"
 )
 
 type Machine struct {
-	hostname string
-	status   int
+	Hostname string `json:"hostname"`
+	Status   int    `json:"status"`
 }
 
 
@@ -40,9 +41,13 @@ func main() {
 			updates = append(updates, machine)
 		}
 
-		message, err := json.Marshal(updates); Check(err)
-		hub.broadcast <- message
-		updates = nil
+		if updates != nil {
+			message, err := json.Marshal(updates); Check(err)
+			hub.broadcast <- message
+			updates = nil
+		} else {
+			fmt.Println("no changes")
+		}
 
 		time.Sleep(5 * time.Second)
 	}
