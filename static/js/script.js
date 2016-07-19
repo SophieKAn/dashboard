@@ -45,7 +45,6 @@ function updater() {
 	}
 	conn.onmessage = function(evt) {
 		let machineData = JSON.parse(evt.data);
-		console.log(machineData);
 		console.log("updating");
 		changeStatus(machineData);
 	}
