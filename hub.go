@@ -3,36 +3,39 @@
 package main
 
 type Hub struct {
-	connections map[*Conn]bool
+	clients map[*Client]bool
 	broadcast chan []byte
-	register chan *Conn
-	unregister chan *Conn
+	register chan *Client
+	unregister chan *Client
 }
 
-var hub = Hub {
-	broadcast:   make(chan []byte),
-	register:    make(chan *Conn),
-	unregister:  make(chan *Conn),
-	connections: make(map[*Conn]bool),
+func newHub() *Hub {
+	return &Hub{
+		broadcast:  make(chan []byte),
+		register:   make(chan *Client),
+		unregister: make(chan *Client),
+		clients:    make(map[*Client]bool),
+	}
 }
+
 
 func (h *Hub) run() {
 	for {
 		select {
-		case conn := <-h.register:
-			h.connections[conn] = true
-		case conn := <-h.unregister:
-			if _, ok := h.connections[conn]; ok {
-				delete(h.connections, conn)
-				close(conn.send)
+		case client := <-h.register:
+			h.clients[client] = true
+		case client := <-h.unregister:
+			if _, ok := h.clients[client]; ok {
+				delete(h.clients, client)
+				close(client.send)
 			}
 		case message := <-h.broadcast:
-			for conn := range h.connections {
+			for client := range h.clients {
 				select {
-				case conn.send <-message:
+				case client.send <-message:
 				default:
-					close(conn.send)
-					delete(h.connections, conn)
+					close(client.send)
+					delete(h.clients, client)
 				}
 			}
 		}

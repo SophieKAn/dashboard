@@ -14,24 +14,25 @@ const (
 
 var upgrader = websocket.Upgrader{}
 
-type Conn struct {
-	ws   *websocket.Conn
+type Client struct {
+	hub *Hub
+	conn   *websocket.Conn
 	send chan []byte
 }
 
 // write writes a message with the given message type and payload
-func (c *Conn) write(mt int, payload []byte) error {
-	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
-	return c.ws.WriteMessage(mt, payload)
+func (c *Client) write(mt int, payload []byte) error {
+	c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+	return c.conn.WriteMessage(mt, payload)
 }
 
 
 // writePump pumps messages from the hub to the websocket connection.
-func (c *Conn) writePump() {
+func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		c.ws.Close()
+		c.conn.Close()
 	}()
 	for {
 		select {
@@ -42,8 +43,8 @@ func (c *Conn) writePump() {
 				return
 			}
 
-			c.ws.SetWriteDeadline(time.Now().Add(writeWait))
-			w, err := c.ws.NextWriter(websocket.TextMessage)
+			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			w, err := c.conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				return
 			}
