@@ -21,10 +21,9 @@ func Check(e error) {
 // GetConfig takes the name of the configuration file (currently "config.json")
 // and attempts to open/read file then unmarshal it into a list of interfaces.
 func GetConfig(fileName string) []interface{} {
-	/* > Open config file and check for errors. */
+
 	configFile, err := ioutil.ReadFile(fileName); Check(err)
 
-	/* Unmarshal the config file as a JSON. */
 	var labs []interface{}
 	err = json.Unmarshal(configFile, &labs); Check(err)
 
