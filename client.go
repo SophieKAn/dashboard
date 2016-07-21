@@ -31,7 +31,6 @@ func (c *Client) write(mt int, payload []byte) error {
 	return c.conn.WriteMessage(mt, payload)
 }
 
-
 // writePump pumps messages from the hub to the websocket connection.
 func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)

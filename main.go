@@ -6,16 +6,15 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
-	"fmt"
 )
 
 type Machine struct {
 	Hostname string `json:"hostname"`
 	Status   int    `json:"status"`
 }
-
 
 func main() {
 	/* > Get lab configuration */
@@ -42,7 +41,8 @@ func main() {
 		}
 
 		if updates != nil {
-			message, err := json.Marshal(updates); Check(err)
+			message, err := json.Marshal(updates)
+			Check(err)
 			hub.broadcast <- message
 			updates = nil
 		} else {
@@ -53,13 +53,14 @@ func main() {
 	}
 }
 
-
 func ServeUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connection. */
-	ws, err := upgrader.Upgrade(w, r, nil); Check(err); defer ws.Close()
+	ws, err := upgrader.Upgrade(w, r, nil)
+	Check(err)
+	defer ws.Close()
 
 	client := &Client{hub, ws, make(chan []byte)}
-	hub.register <-client
+	hub.register <- client
 	go func() {
 		data, _ := json.Marshal(allMachines)
 		client.send <- data

@@ -22,10 +22,12 @@ func Check(e error) {
 // and attempts to open/read file then unmarshal it into a list of interfaces.
 func GetConfig(fileName string) []interface{} {
 
-	configFile, err := ioutil.ReadFile(fileName); Check(err)
+	configFile, err := ioutil.ReadFile(fileName)
+	Check(err)
 
 	var labs []interface{}
-	err = json.Unmarshal(configFile, &labs); Check(err)
+	err = json.Unmarshal(configFile, &labs)
+	Check(err)
 
 	return labs
 }

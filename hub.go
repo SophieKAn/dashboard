@@ -3,9 +3,9 @@
 package main
 
 type Hub struct {
-	clients map[*Client]bool
-	broadcast chan []byte
-	register chan *Client
+	clients    map[*Client]bool
+	broadcast  chan []byte
+	register   chan *Client
 	unregister chan *Client
 }
 
@@ -17,7 +17,6 @@ func newHub() *Hub {
 		clients:    make(map[*Client]bool),
 	}
 }
-
 
 func (h *Hub) run() {
 	for {
@@ -32,7 +31,7 @@ func (h *Hub) run() {
 		case message := <-h.broadcast:
 			for client := range h.clients {
 				select {
-				case client.send <-message:
+				case client.send <- message:
 				default:
 					close(client.send)
 					delete(h.clients, client)
