@@ -8,12 +8,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 // Check takes an error, and prints the error if it isn't nil.
 func Check(e error) {
 	if e != nil {
 		fmt.Printf("Error: %v", e)
+		os.Exit()
 	}
 }
 
