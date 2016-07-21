@@ -5,6 +5,7 @@ package main
 ///////////////
 
 import (
+	"fmt"
 	"net"
 	"sync"
 	"time"
@@ -16,42 +17,61 @@ const (
 	INACCESSIBLE = 2
 )
 
-// systemStatus takes a hostname(str) and returns what operating system that
-// machine is running based on which port is successfully used to connect.
-func systemStatus(hostname string) int {
-	if accessible(hostname, "***REMOVED***") {
+// GetStatus takes a Hostname and checks whether it is available on port ***REMOVED***
+// or ***REMOVED*** (linux and windows respectively). If not accessible on either port,
+// that host is deemed inaccesssible.
+func GetStatus(hostname string) int {
+	if Accessible(hostname, "***REMOVED***") {
 		return LINUX
-	} else if accessible(hostname, "***REMOVED***") {
+	} else if Accessible(hostname, "***REMOVED***") {
 		return WINDOWS
 	} else {
 		return INACCESSIBLE
 	}
 }
 
-// accessible takes a hostname and a port number and tries to establish a
+// Accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
-// It returns an error, if one occurrs.
-func accessible(hostn string, port string) bool {
-	conn, err := net.DialTimeout("tcp", hostn+":"+port, time.Millisecond*50)
-	check := check(err)
-	if check {
+func Accessible(hostn string, port string) bool {
+	conn, err := net.DialTimeout("tcp", hostn+":"+port, 1*time.Second)
+
+	if err == nil {
 		conn.Close()
 		return true
+	} else {
+		return false
 	}
-	return false
 }
 
-//
-//
-func updateStatuses(machines []*Machine) {
-	var wg sync.WaitGroup
-	for _, machine := range machines {
-		wg.Add(1)
+// UpdateStatuses takes the list of Machine pointers and iterates through them
+// using nested goroutines to call Update for each one. It waits until all
+// goroutines are finished before returning.
+func UpdateStatuses(machines []*Machine) chan *Machine {
+	fmt.Println("updating")
+	out := make(chan *Machine)
+	go func(chan *Machine) {
+		var wg sync.WaitGroup
+		for _, machine := range machines {
+			wg.Add(1)
 
-		go func(m *Machine) {
-			defer wg.Done()
-			// m.UpdateStatus()
-		}(machine)
+			go func(m *Machine) {
+				defer wg.Done()
+				m.Update(out)
+			}(machine)
+		}
+		wg.Wait()
+		close(out)
+	}(out)
+	return out
+}
+
+// Update takes an output channel. For machine m, it checks for a change in
+// status, and if it has changed sends itself along the 'out' channel.
+func (m *Machine) Update(out chan *Machine) {
+	newStatus := GetStatus(m.Hostname)
+
+	if newStatus != m.Status {
+		m.Status = newStatus
+		out <- m
 	}
-	wg.Wait()
 }
