@@ -10,8 +10,7 @@ import (
 	"io/ioutil"
 )
 
-// Check takes an error. If the error exists it gets printed, and then the
-// program exits. If it is nil, nothing happens.
+// Check takes an error, and prints the error if it isn't nil.
 func Check(e error) {
 	if e != nil {
 		fmt.Printf("Error: %v", e)

@@ -44,8 +44,8 @@ func Accessible(hostn string, port string) bool {
 }
 
 // UpdateStatuses takes the list of Machine pointers and iterates through them
-// using goroutines to call Update for each one. It waits until all goroutines
-// are finished before returning.
+// using nested goroutines to call Update for each one. It waits until all
+// goroutines are finished before returning.
 func UpdateStatuses(machines []*Machine) chan *Machine {
 	fmt.Println("updating")
 	out := make(chan *Machine)
@@ -65,9 +65,8 @@ func UpdateStatuses(machines []*Machine) chan *Machine {
 	return out
 }
 
-// Update takes the updates channel. For the Machine it was called on, it
-// checks whether the status has changed, and sends any changes on the updates
-// channel, and changes the status.
+// Update takes an output channel. For machine m, it checks for a change in
+// status, and if it has changed sends itself along the 'out' channel.
 func (m *Machine) Update(out chan *Machine) {
 	newStatus := GetStatus(m.Hostname)
 
