@@ -15,7 +15,7 @@ import (
 func Check(e error) {
 	if e != nil {
 		fmt.Printf("Error: %v", e)
-		os.Exit()
+		os.Exit(1)
 	}
 }
 
