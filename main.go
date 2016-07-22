@@ -10,7 +10,8 @@ import (
 
 const Version = "1.0.0"
 
-var usage = `Start a server to display the current usage of all the labs.
+var (
+	usage = `Start a server to display the current usage of all the labs.
 
 Usage:
   dashboard -v | --version
@@ -22,7 +23,6 @@ Options:
   -h, --help     Show this message
   -b, --bind     Set the interface:port for the server`
 
-var (
 	defaultConfig    = "./static/config.json"
 	defaultInterface = "localhost"
 	defaultPort      = "8080"
