@@ -20,11 +20,6 @@ Options:
   -v, --version  Show version
   -h, --help     Show this message`
 
-type Machine struct {
-	Hostname string `json:"hostname"`
-	Status   int    `json:"status"`
-}
-
 func main() {
 	_, _ = docopt.Parse(usage, nil, true, Version, false)
 

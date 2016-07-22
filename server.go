@@ -11,6 +11,11 @@ import (
 	"net/http"
 )
 
+type Machine struct {
+	Hostname string `json:"hostname"`
+	Status   int    `json:"status"`
+}
+
 func Server() {
 
 	/* > Get lab configuration */
