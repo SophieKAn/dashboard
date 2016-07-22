@@ -18,11 +18,13 @@ Usage:
   dashboard -v | --version
   dashboard -h | --help
   dashboard -b | --bind (<interface>:<port>|<interface>|:<port>)
+  dashboard --debug
 
 Options:
   -v, --version  Show version
   -h, --help     Show this message
-  -b, --bind     Set the interface:port for the server`
+  -b, --bind     Set the interface:port for the server
+	--debug        Turn on debugging output`
 
 	defaultConfig    = "./static/config.json"
 	defaultInterface = "localhost"
@@ -34,17 +36,17 @@ func main() {
 
 	switch cmdName(args) {
 	case "--bind":
-		fmt.Println("bind command")
+		fmt.Println("Set the interface:port for the server")
+	case "--debug":
+		fmt.Println("Turn on debugging output")
 	}
 
 	Server()
 }
 
 
-
-
 func cmdName(args map[string]interface{}) string {
-	for _, cmd := range []string{"--bind"} {
+	for _, cmd := range []string{"--bind", "--debug"} {
 		if args[cmd].(bool) {
 			return cmd
 		}
