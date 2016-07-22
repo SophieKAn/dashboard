@@ -5,10 +5,10 @@ package main
 ///////////////
 
 import (
-	"time"
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 )
 
 type Machine struct {

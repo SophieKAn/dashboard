@@ -20,6 +20,12 @@ Options:
   -v, --version  Show version
   -h, --help     Show this message`
 
+var (
+	defaultConfig = "./static/config.json"
+	defaultInterface = "localhost"
+	defaultPort = "8080"
+)
+
 func main() {
 	_, _ = docopt.Parse(usage, nil, true, Version, false)
 
