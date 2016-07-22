@@ -19,7 +19,7 @@ type Machine struct {
 func Server() {
 
 	/* > Get lab configuration */
-	labConfig := GetConfig("./static/config.json")
+	labConfig := GetConfig(defaultConfig)
 	allMachines := GetMachines(labConfig)
 
 	/* > Run the Hub */
@@ -32,7 +32,7 @@ func Server() {
 		ServeUpdates(hub, allMachines, w, r)
 	})
 
-	go http.ListenAndServe("localhost:8080", nil)
+	go http.ListenAndServe(defaultInterface + ":" + defaultPort, nil)
 
 	/* > Update forever */
 	var updates []*Machine
