@@ -75,4 +75,3 @@ func Accessible(hostn string, port string) bool {
 		return false
 	}
 }
-

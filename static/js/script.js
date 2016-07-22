@@ -20,7 +20,7 @@ function initializePage(url) {
             createLabMachine(cs_lab, i);
           }
         });
-				updater();
+        updater();
       }
     }
   }
@@ -31,7 +31,7 @@ function initializePage(url) {
 function createLabMachine(cs_lab, i) {
   let lab_machine = document.createElement('div');
   lab_machine.className = "lab_machine";
-	lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + ".***REMOVED***";
+  lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + ".***REMOVED***";
   lab_machine.innerText = i;
   cs_lab.appendChild(lab_machine);
 }
@@ -39,33 +39,33 @@ function createLabMachine(cs_lab, i) {
 
 
 function updater() {
-	var conn = new WebSocket("ws://localhost:8080/upd");
-	conn.onclose = function(evt) {
-		console.log("Connection closed");
-	}
-	conn.onmessage = function(evt) {
-		let machineData = JSON.parse(evt.data);
-		console.log("updating");
-		changeStatus(machineData);
-	}
+  var conn = new WebSocket("ws://localhost:8080/upd");
+  conn.onclose = function(evt) {
+    console.log("Connection closed");
+  }
+  conn.onmessage = function(evt) {
+    let machineData = JSON.parse(evt.data);
+    console.log("updating");
+    changeStatus(machineData);
+  }
 }
 
 
 function changeStatus(machineData) {
   machineData.forEach(m => {
-		let el = document.getElementById(m.hostname);
-			if (m.status == 0) {
-				el.style.background = "MediumSeaGreen";
-			} else if (m.status == 1) {
-				el.style.background = "MediumSlateBlue";
-			} else {
-				el.style.background = "gray";
-			}
-	});
+    let el = document.getElementById(m.hostname);
+      if (m.status == 0) {
+        el.style.background = "MediumSeaGreen";
+      } else if (m.status == 1) {
+        el.style.background = "MediumSlateBlue";
+      } else {
+        el.style.background = "gray";
+      }
+  });
 }
 
 function pad(n) {
-	// http://stackoverflow.com/a/8089938/6279238
-	// only for positive integers
-	return (n < 10) ? ("0" + n.toString()) : String(n);
+  // http://stackoverflow.com/a/8089938/6279238
+  // only for positive integers
+  return (n < 10) ? ("0" + n.toString()) : String(n);
 }
