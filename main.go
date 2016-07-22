@@ -5,6 +5,7 @@ package main
 /////////////
 
 import (
+	"fmt"
 	"github.com/docopt/docopt-go"
 )
 
@@ -29,7 +30,25 @@ Options:
 )
 
 func main() {
-	_, _ = docopt.Parse(usage, nil, true, Version, false)
+	args, _ := docopt.Parse(usage, nil, true, Version, false)
+
+	switch cmdName(args) {
+	case "--bind":
+		fmt.Println("bind command")
+	}
 
 	Server()
+}
+
+
+
+
+func cmdName(args map[string]interface{}) string {
+	for _, cmd := range []string{"--bind"} {
+		if args[cmd].(bool) {
+			return cmd
+		}
+	}
+
+	return ""
 }
