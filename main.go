@@ -15,15 +15,17 @@ var usage = `Start a server to display the current usage of all the labs.
 Usage:
   dashboard -v | --version
   dashboard -h | --help
+  dashboard -b | --bind (<interface>:<port>|<interface>|:<port>)
 
 Options:
   -v, --version  Show version
-  -h, --help     Show this message`
+  -h, --help     Show this message
+  -b, --bind     Set the interface:port for the server`
 
 var (
-	defaultConfig = "./static/config.json"
+	defaultConfig    = "./static/config.json"
 	defaultInterface = "localhost"
-	defaultPort = "8080"
+	defaultPort      = "8080"
 )
 
 func main() {
