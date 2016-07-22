@@ -18,11 +18,11 @@ Usage:
   dashboard [options]
 
 Options:
-  -v, --version          Show version
-  -h, --help             Show this message
-  -b, --bind=<interface> Set the interface and port for the server
-  --debug                Turn on debugging output
-  -c, --config=<file>    Specify a configuration file`
+  -v, --version                 Show version
+  -h, --help                    Show this message
+  -b, --bind=<interface>:<port> Set the interface and port for the server
+  --debug                       Turn on debugging output
+  -c, --config=<file>           Specify a configuration file`
 
 	defaultConfig    = "./static/config.json"
 	defaultInterface = "localhost"
