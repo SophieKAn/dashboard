@@ -16,10 +16,10 @@ var (
 
 Usage:
   dashboard [options]
+	dashboard -v | --version
+	dashboard -h | --help
 
 Options:
-  -v, --version                 Show version
-  -h, --help                    Show this message
   -b, --bind=<interface>:<port> Set the interface and port for the server
   --debug                       Turn on debugging output
   -c, --config=<file>           Specify a configuration file`
