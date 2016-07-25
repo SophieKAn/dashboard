@@ -16,15 +16,15 @@ type Machine struct {
 	Status   int    `json:"status"`
 }
 
-func Server() {
+func Server(interf string, port string, config string, debug bool) {
 
 	/* > Get lab configuration */
-	labConfig := GetConfig(defaultConfig)
+	labConfig := GetConfig(config)
 	allMachines := GetMachines(labConfig)
 
 	/* > Run the Hub */
 	hub := newHub()
-	hub.run()
+	go hub.run()
 
 	/* > Start the server */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
@@ -32,7 +32,7 @@ func Server() {
 		ServeUpdates(hub, allMachines, w, r)
 	})
 
-	go http.ListenAndServe(defaultInterface+":"+defaultPort, nil)
+	go http.ListenAndServe(interf+":"+port, nil)
 
 	/* > Update forever */
 	var updates []*Machine
