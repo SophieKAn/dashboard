@@ -7,6 +7,8 @@ package main
 import (
 	"fmt"
 	"github.com/docopt/docopt-go"
+	"strings"
+	"regexp"
 )
 
 const Version = "1.0.0"
@@ -54,12 +56,25 @@ func configCommand(filename interface{}) string {
 
 func bindCommand(interfaceport interface{}) (string, string) {
 	var interf, port string
+	interf = defaultInterface
+	port = defaultPort
 
 	if interfaceport != nil {
-		_ = interfaceport.(string)
+		str := interfaceport.(string)
+		if strings.Contains(str, ":") {
+			rxp, err := regexp.Compile("([a-zA-Z0-9.-]+)?:(\\d*)")
+			Check(err)
+			matches, err := rxp.MatchString(str, -1)
+			if matches {
+				//
+			} else {
+				fmt.Println("something went wrong")
+			}
+		} else {
+			interf = str
+		}
 	}
 
-	interf = defaultInterface
 	port   = defaultPort
 	return interf, port
 }
@@ -67,6 +82,6 @@ func bindCommand(interfaceport interface{}) (string, string) {
 func printStuff(interf string, port string, config string, debug bool) {
 	fmt.Printf("Interface is %s\n", interf)
 	fmt.Printf("Port is %s\n", port)
-	fmt.Printf("Config file is %s\n", config)
-	fmt.Printf("Debug is %t\n", debug)
+	//fmt.Printf("Config file is %s\n", config)
+	//fmt.Printf("Debug is %t\n", debug)
 }
