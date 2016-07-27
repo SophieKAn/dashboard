@@ -5,7 +5,6 @@ package main
 /////////////
 
 import (
-	"fmt"
 	"github.com/docopt/docopt-go"
 	"regexp"
 	"strings"
@@ -14,19 +13,17 @@ import (
 const Version = "1.0.0"
 
 var (
-	usage = `Start a server to display the current usage of all the labs.
+	usage = `Start a server to display current usage of labs.
 
 Usage:
   dashboard [options]
-  dashboard -v | --version
-  dashboard -h | --help
+  dashboard (-v | --version)
+  dashboard (-h | --help)
 
 Options:
-  -h, --help
-  -v, --version
-  -b, --bind=<interface>:<port> Set the interface and port for the server
-  --debug                       Turn on debugging output
-  -c, --config=<file>           Specify a configuration file`
+  --debug                                             Turn on debugging output.
+  -b, --bind=(<interface>:<port>|<interface>|:<port>) Set the interface and port for the server.
+  -c, --config=<file>                                 Specify a configuration file.`
 
 	defaultConfig    = "./static/config.json"
 	defaultInterface = "localhost"
@@ -35,7 +32,8 @@ Options:
 )
 
 func main() {
-	args, _ := docopt.Parse(usage, nil, true, Version, false)
+	args, err := docopt.Parse(usage, nil, true, Version, false)
+	Check(err)
 	config := configCommand(args["--config"])
 	interf, port := bindCommand(args["--bind"])
 	debug = args["--debug"].(bool)
@@ -58,23 +56,23 @@ func bindCommand(input interface{}) (string, string) {
 
 	if input != nil {
 		inputString := input.(string)
-		if strings.Contains(inputString, ":") {
-			rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d*)")
-			matches := rgx.FindStringSubmatch(inputString)
-			names := rgx.SubexpNames()
-			matchMap := mapSubexpNames(matches, names)
 
-			if matchMap["interface"] != "" {
-				interf = matchMap["interface"]
+		if strings.Contains(inputString, ":") {
+			rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d{4})?")
+			matches := rgx.FindStringSubmatch(inputString)
+			matchMap := mapSubexpNames(matches, rgx.SubexpNames())
+
+			if inf := matchMap["interface"]; inf != "" {
+				interf = inf
 			}
-			if matchMap["port"] != "" {
-				port = matchMap["port"]
+
+			if p := matchMap["port"]; p != "" {
+				port = p
 			}
 		} else {
 			interf = inputString
 		}
 	}
-
 	return interf, port
 }
 
