@@ -5,10 +5,10 @@ package main
 /////////////
 
 import (
-	"fmt"
 	"github.com/docopt/docopt-go"
 	"regexp"
 	"strings"
+	"fmt"
 )
 
 const Version = "1.0.0"
@@ -40,7 +40,7 @@ func main() {
 	interf, port := bindCommand(args["--bind"])
 	debug = args["--debug"].(bool)
 
-	printStuff(interf, port, config, debug)
+	PrintStuff(interf, port, config, debug)
 	Server(interf, port, config, debug)
 }
 
@@ -55,17 +55,15 @@ func configCommand(filename interface{}) string {
 }
 
 func bindCommand(interfaceport interface{}) (string, string) {
-	var interf, port string
-	interf = defaultInterface
-	port = defaultPort
+	interf, port := defaultInterface, defaultPort
 
 	if interfaceport != nil {
 		str := interfaceport.(string)
 		if strings.Contains(str, ":") {
 			rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d*)")
-			m := rgx.FindStringSubmatch(str)
-			n := rgx.SubexpNames()
-			aMap := mapSubexpNames(m, n)
+			match := rgx.FindStringSubmatch(str)
+			names := rgx.SubexpNames()
+			aMap := mapSubexpNames(match, names)
 			if aMap["interface"] != "" {
 				interf = aMap["interface"]
 			}
@@ -80,13 +78,6 @@ func bindCommand(interfaceport interface{}) (string, string) {
 	return interf, port
 }
 
-func printStuff(interf string, port string, config string, debug bool) {
-	fmt.Printf("Interface is %s\n", interf)
-	fmt.Printf("Port is %s\n", port)
-	//fmt.Printf("Config file is %s\n", config)
-	//fmt.Printf("Debug is %t\n", debug)
-}
-
 func mapSubexpNames(m, n []string) map[string]string {
 	m, n = m[1:], n[1:]
 	r := make(map[string]string, len(m))
@@ -94,4 +85,12 @@ func mapSubexpNames(m, n []string) map[string]string {
 		r[n[i]] = m[i]
 	}
 	return r
+}
+
+func PrintStuff(intf string, port string, config string, debug bool) {
+	fmt.Printf("Interface: %s\n", intf)
+	fmt.Printf("Port:      %s\n", port)
+	fmt.Printf("Config:    %s\n", config)
+	fmt.Printf("Debug:     %t\n", debug)
+	fmt.Println()
 }
