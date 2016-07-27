@@ -44,12 +44,12 @@ func main() {
 }
 
 func configCommand(filename interface{}) string {
-	var config = ""
+	config := defaultConfig
+
 	if filename != nil {
 		config = filename.(string)
-	} else {
-		config = defaultConfig
 	}
+
 	return config
 }
 
