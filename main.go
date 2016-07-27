@@ -40,7 +40,6 @@ func main() {
 	interf, port := bindCommand(args["--bind"])
 	debug = args["--debug"].(bool)
 
-	PrintStuff(interf, port, config, debug)
 	Server(interf, port, config, debug)
 }
 
@@ -54,24 +53,25 @@ func configCommand(filename interface{}) string {
 	return config
 }
 
-func bindCommand(interfaceport interface{}) (string, string) {
+func bindCommand(input interface{}) (string, string) {
 	interf, port := defaultInterface, defaultPort
 
-	if interfaceport != nil {
-		str := interfaceport.(string)
-		if strings.Contains(str, ":") {
+	if input != nil {
+		inputString := input.(string)
+		if strings.Contains(inputString, ":") {
 			rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d*)")
-			match := rgx.FindStringSubmatch(str)
+			matches := rgx.FindStringSubmatch(inputString)
 			names := rgx.SubexpNames()
-			aMap := mapSubexpNames(match, names)
-			if aMap["interface"] != "" {
-				interf = aMap["interface"]
+			matchMap := mapSubexpNames(matches, names)
+
+			if matchMap["interface"] != "" {
+				interf = matchMap["interface"]
 			}
-			if aMap["port"] != "" {
-				port = aMap["port"]
+			if matchMap["port"] != "" {
+				port = matchMap["port"]
 			}
 		} else {
-			interf = str
+			interf = inputString
 		}
 	}
 
@@ -87,10 +87,10 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-func PrintStuff(intf string, port string, config string, debug bool) {
-	fmt.Printf("Interface: %s\n", intf)
-	fmt.Printf("Port:      %s\n", port)
-	fmt.Printf("Config:    %s\n", config)
-	fmt.Printf("Debug:     %t\n", debug)
-	fmt.Println()
-}
+//func PrintStuff(intf string, port string, config string, debug bool) {
+	//fmt.Printf("Interface: %s\n", intf)
+	//fmt.Printf("Port:      %s\n", port)
+	//fmt.Printf("Config:    %s\n", config)
+	//fmt.Printf("Debug:     %t\n", debug)
+	//fmt.Println()
+//}
