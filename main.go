@@ -5,10 +5,10 @@ package main
 /////////////
 
 import (
+	"fmt"
 	"github.com/docopt/docopt-go"
 	"regexp"
 	"strings"
-	"fmt"
 )
 
 const Version = "1.0.0"
@@ -88,9 +88,9 @@ func mapSubexpNames(m, n []string) map[string]string {
 }
 
 //func PrintStuff(intf string, port string, config string, debug bool) {
-	//fmt.Printf("Interface: %s\n", intf)
-	//fmt.Printf("Port:      %s\n", port)
-	//fmt.Printf("Config:    %s\n", config)
-	//fmt.Printf("Debug:     %t\n", debug)
-	//fmt.Println()
+//fmt.Printf("Interface: %s\n", intf)
+//fmt.Printf("Port:      %s\n", port)
+//fmt.Printf("Config:    %s\n", config)
+//fmt.Printf("Debug:     %t\n", debug)
+//fmt.Println()
 //}
