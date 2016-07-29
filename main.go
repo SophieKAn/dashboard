@@ -17,8 +17,8 @@ var (
 
 Usage:
   dashboard [options]
-  dashboard (-v | --version)
-  dashboard (-h | --help)
+  dashboard --version
+  dashboard -h | --help
 
 Options:
   --debug                                             Turn on debugging output.
