@@ -39,7 +39,7 @@ func main() {
 	interf, port := bindCommand(args["--bind"])
 	debug = args["--debug"].(bool)
 
-	PrintStuff(interf, port, config, debug)
+	PrintArgs(interf, port, config, debug)
 	Server(interf, port, config, debug)
 }
 
@@ -89,7 +89,7 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-func PrintStuff(intf string, port string, config string, debug bool) {
+func PrintArgs(intf string, port string, config string, debug bool) {
 	fmt.Printf("Interface: %s\n", intf)
 	fmt.Printf("Port:      %s\n", port)
 	fmt.Printf("Config:    %s\n", config)
