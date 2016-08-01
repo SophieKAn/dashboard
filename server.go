@@ -32,7 +32,10 @@ func Server(interf string, port string, config string, debug bool) {
 		ServeUpdates(hub, allMachines, w, r)
 	})
 
-	go http.ListenAndServe(interf+":"+port, nil)
+	go func() {
+		err := http.ListenAndServe(interf+":"+port, nil)
+		Check(err)
+	}()
 
 	/* > Update forever */
 	var updates []*Machine
