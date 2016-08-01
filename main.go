@@ -14,7 +14,7 @@ import (
 const Version = "dashboard 1.0.0"
 
 var (
-	usage = `Start a server to display current usage of labs.
+	usage = `Start a web server to display current usage of labs.
 
 Usage:
   dashboard [options]
