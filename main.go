@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const Version = "1.0.0"
+const Version = "dashboard 1.0.0"
 
 var (
 	usage = `Start a server to display current usage of labs.
