@@ -14,7 +14,7 @@ import (
 // Check takes an error, and prints the error if it isn't nil.
 func Check(e error) {
 	if e != nil {
-		fmt.Printf("Error: %v\n", e)
+		log.Printf("Error: %v\n", e)
 		os.Exit(1)
 	}
 }
