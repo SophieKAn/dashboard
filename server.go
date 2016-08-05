@@ -16,7 +16,7 @@ type Machine struct {
 	Status   int    `json:"status"`
 }
 
-func Server(interf string, port string, config string, debug bool) {
+func Server(interf string, port string, config string, interval time.Duration, debug bool) {
 
 	/* > Get lab configuration */
 	labConfig := GetConfig(config)
@@ -53,7 +53,7 @@ func Server(interf string, port string, config string, debug bool) {
 			fmt.Println("no changes")
 		}
 
-		time.Sleep(5 * time.Second)
+		time.Sleep(interval)
 	}
 }
 
