@@ -18,7 +18,7 @@ const Version = "dashboard 1.0.0"
 type Configs struct {
 	Configfile string
 	Interface  string
-	Port       int
+	Port       string
 	Interval   time.Duration
 	Debug      bool
 }
@@ -45,22 +45,26 @@ Options:
 )
 
 func main() {
-	var configs Configs
+	var configs Configs = Configs{"", "", "", 0, false}
 
-	/* > Get configs from config file */
+	/* > Get configs from command-line arguments */
+
+	args, err := docopt.Parse(usage, nil, true, Version, false)
+	Check(err)
+
+	configs.Configfile = configCommand(args["--config"])
+	configs.Interface, configs.Port = bindCommand(args["--bind"])
+	configs.Interval = intervalCommand(args["--interval"])
+	configs.Debug = args["--debug"].(bool)
 
 	/* > Get configs from environment variables */
 
-	/* > Get configs from command-line arguments */
-	args, err := docopt.Parse(usage, nil, true, Version, false)
-	Check(err)
-	config := configCommand(args["--config"])
-	interf, port := bindCommand(args["--bind"])
-	interval := intervalCommand(args["--interval"])
-	debug = args["--debug"].(bool)
 
-	PrintConfigs(interf, port, config, interval, debug)
-	Server(interf, port, config, interval, debug)
+
+	/* > Get configs from config file */
+
+	PrintConfigs(configs)
+	//Server(interf, port, config, interval, debug)
 }
 
 func configCommand(filename interface{}) string {
@@ -140,11 +144,11 @@ func intervalCommand(input interface{}) time.Duration {
 	return interval
 }
 
-func PrintConfigs(intf string, port string, config string, interval time.Duration, debug bool) {
-	fmt.Printf("Interface: %s\n", intf)
-	fmt.Printf("Port:      %s\n", port)
-	fmt.Printf("Config:    %s\n", config)
-	fmt.Printf("Interval:  %q\n", interval)
-	fmt.Printf("Debug:     %t\n", debug)
+func PrintConfigs(configs Configs) {
+	fmt.Printf("Interface:  %s\n", configs.Interface)
+	fmt.Printf("Port:       %s\n", configs.Port)
+	fmt.Printf("Configfile: %s\n", configs.Configfile)
+	fmt.Printf("Interval:   %q\n", configs.Interval)
+	fmt.Printf("Debug:      %t\n", configs.Debug)
 	fmt.Println()
 }

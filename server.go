@@ -16,10 +16,10 @@ type Machine struct {
 	Status   int    `json:"status"`
 }
 
-func Server(interf string, port string, config string, interval time.Duration, debug bool) {
+func Server(configs Configs) {
 
 	/* > Get lab configuration */
-	labConfig := GetConfig(config)
+	labConfig := GetConfig(configs.Configfile)
 	allMachines := GetMachines(labConfig)
 
 	/* > Run the Hub */
@@ -33,7 +33,7 @@ func Server(interf string, port string, config string, interval time.Duration, d
 	})
 
 	go func() {
-		err := http.ListenAndServe(interf+":"+port, nil)
+		err := http.ListenAndServe(configs.Interface+":"+configs.Port, nil)
 		Check(err)
 	}()
 
@@ -53,7 +53,7 @@ func Server(interf string, port string, config string, interval time.Duration, d
 			fmt.Println("no changes")
 		}
 
-		time.Sleep(interval)
+		time.Sleep(configs.Interval)
 	}
 }
 
