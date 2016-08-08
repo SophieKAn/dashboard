@@ -15,6 +15,14 @@ import (
 
 const Version = "dashboard 1.0.0"
 
+type Configs struct {
+	Configfile string
+	Interface  string
+	Port       int
+	Interval   time.Duration
+	Debug      bool
+}
+
 var (
 	usage = `Start a web server to display current usage of labs.
 
@@ -37,6 +45,13 @@ Options:
 )
 
 func main() {
+	var configs Configs
+
+	/* > Get configs from config file */
+
+	/* > Get configs from environment variables */
+
+	/* > Get configs from command-line arguments */
 	args, err := docopt.Parse(usage, nil, true, Version, false)
 	Check(err)
 	config := configCommand(args["--config"])
@@ -44,7 +59,7 @@ func main() {
 	interval := intervalCommand(args["--interval"])
 	debug = args["--debug"].(bool)
 
-	PrintArgs(interf, port, config, interval, debug)
+	PrintConfigs(interf, port, config, interval, debug)
 	Server(interf, port, config, interval, debug)
 }
 
@@ -125,7 +140,7 @@ func intervalCommand(input interface{}) time.Duration {
 	return interval
 }
 
-func PrintArgs(intf string, port string, config string, interval time.Duration, debug bool) {
+func PrintConfigs(intf string, port string, config string, interval time.Duration, debug bool) {
 	fmt.Printf("Interface: %s\n", intf)
 	fmt.Printf("Port:      %s\n", port)
 	fmt.Printf("Config:    %s\n", config)
