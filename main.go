@@ -16,7 +16,7 @@ import (
 
 const Version = "dashboard 1.0.0"
 
-type Configs struct {
+type Configs struct { // name change
 	Configfile string
 	Interface  string
 	Port       string
@@ -54,7 +54,7 @@ func main() {
 
 	configs.Configfile = configCommand(args["--config"])
 	configs.Interface, configs.Port = bindCommand(args["--bind"])
-	configs.Interval = intervalCommand(args["--interval"])
+	configs.Interval = IntervalCommand(args["--interval"])
 	configs.Debug = debugCommand(args["--debug"])
 
 	/* > Get configs from config file */
@@ -122,7 +122,7 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-func intervalCommand(input interface{}) time.Duration {
+func IntervalCommand(input interface{}) time.Duration {
 	var intervalString string
 	var interval time.Duration
 
@@ -161,7 +161,6 @@ func intervalCommand(input interface{}) time.Duration {
 func debugCommand(input interface{}) bool {
 	db := input.(bool)
 	db2, err := strconv.ParseBool(os.Getenv("DASHBOARD_DEBUG"))
-	fmt.Println(db2)
 	Check(err)
 
 	return db || db2

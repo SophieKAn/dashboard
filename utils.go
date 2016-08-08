@@ -22,7 +22,7 @@ func Check(e error) {
 
 // GetConfig takes the name of the configuration file (currently "config.json")
 // and attempts to open/read file then unmarshal it into a list of interfaces.
-func GetConfig(fileName string) []interface{} {
+func GetConfig(fileName string) map[string]interface{} {
 
 	configFile, err := ioutil.ReadFile(fileName)
 	Check(err)
@@ -31,7 +31,7 @@ func GetConfig(fileName string) []interface{} {
 	err = json.Unmarshal(configFile, &labs)
 	Check(err)
 
-	return labs["labsetup"].([]interface{})
+	return labs
 }
 
 // GetMachines takes the unmarshalled config.json and constructs a slice of
