@@ -64,8 +64,6 @@ func main() {
 	//Server(configs)
 }
 
-//
-//
 func configCommand(filename interface{}) string {
 	var config string
 	environmentConfig := os.Getenv("DASHBOARD_CONFIG")
@@ -85,8 +83,6 @@ func configCommand(filename interface{}) string {
 	return config
 }
 
-//
-//
 func bindCommand(input interface{}) (string, string) {
 	var interf, port, inputString string
 
@@ -116,8 +112,6 @@ func bindCommand(input interface{}) (string, string) {
 	return interf, port
 }
 
-//
-//
 func mapSubexpNames(m, n []string) map[string]string {
 	/* http://stackoverflow.com/a/30483899/6279238 */
 	/* Code found in comment on main answer */
@@ -129,8 +123,6 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-//
-//
 func intervalCommand(input interface{}) time.Duration {
 	var intervalString string
 	var interval time.Duration
@@ -167,8 +159,6 @@ func intervalCommand(input interface{}) time.Duration {
 	return interval
 }
 
-//
-//
 func PrintConfigs(configs Configs) {
 	fmt.Printf("Interface:  %s\n", configs.Interface)
 	fmt.Printf("Port:       %s\n", configs.Port)
