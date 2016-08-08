@@ -27,11 +27,11 @@ func GetConfig(fileName string) []interface{} {
 	configFile, err := ioutil.ReadFile(fileName)
 	Check(err)
 
-	var labs []interface{}
+	var labs map[string]interface{}
 	err = json.Unmarshal(configFile, &labs)
 	Check(err)
 
-	return labs
+	return labs["labsetup"].([]interface{})
 }
 
 // GetMachines takes the unmarshalled config.json and constructs a slice of
