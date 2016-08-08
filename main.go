@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"github.com/docopt/docopt-go"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -37,14 +38,14 @@ Options:
   -c, --config=<file>                                 Specify a configuration file.
   -i, --interval=(<sec>s|<min>m|<hr>h)`
 
-	defaultConfig    = "./static/config.json"
-	defaultInterface = "localhost"
-	defaultPort      = "8080"
-	defaultInterval  = time.Second * 5
-	debug            = false
+	defaultConfig     = "./static/config.json"
+	defaultInterval   = 5 * time.Second
+	linuxConfigPath   = "/etc/dashboard/config.json"
+	freeBSDConfigPath = "/usr/local/etc/dashboard/config.json"
 )
 
 func main() {
+
 	var configs Configs = Configs{"", "", "", 0, false}
 
 	/* > Get configs from command-line arguments */
@@ -57,32 +58,45 @@ func main() {
 	configs.Interval = intervalCommand(args["--interval"])
 	configs.Debug = args["--debug"].(bool)
 
-	/* > Get configs from environment variables */
-
-
-
 	/* > Get configs from config file */
 
 	PrintConfigs(configs)
-	//Server(interf, port, config, interval, debug)
+	//Server(configs)
 }
 
+//
+//
 func configCommand(filename interface{}) string {
-	config := defaultConfig
+	var config string
+	environmentConfig := os.Getenv("DASHBOARD_CONFIG")
 
 	if filename != nil {
 		config = filename.(string)
+	} else if environmentConfig != "" {
+		config = os.Getenv("DASHBOARD_CONFIG")
+	} else if _, err := os.Stat(linuxConfigPath); err == nil {
+		config = linuxConfigPath
+	} else if _, err := os.Stat(freeBSDConfigPath); err == nil {
+		config = freeBSDConfigPath
+	} else {
+		fmt.Println("This program requires a config file to run. See documentation.")
 	}
 
 	return config
 }
 
+//
+//
 func bindCommand(input interface{}) (string, string) {
-	interf, port := defaultInterface, defaultPort
+	var interf, port, inputString string
 
 	if input != nil {
-		inputString := input.(string)
+		inputString = input.(string)
+	} else {
+		inputString = os.Getenv("DASHBOARD_BIND")
+	}
 
+	if inputString != "" {
 		if strings.Contains(inputString, ":") {
 			rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d{4})?")
 			matches := rgx.FindStringSubmatch(inputString)
@@ -102,6 +116,8 @@ func bindCommand(input interface{}) (string, string) {
 	return interf, port
 }
 
+//
+//
 func mapSubexpNames(m, n []string) map[string]string {
 	/* http://stackoverflow.com/a/30483899/6279238 */
 	/* Code found in comment on main answer */
@@ -113,12 +129,19 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
+//
+//
 func intervalCommand(input interface{}) time.Duration {
-	interval := defaultInterval
+	var intervalString string
+	var interval time.Duration
 
 	if input != nil {
-		intervalString := input.(string)
+		intervalString = input.(string)
+	} else {
+		intervalString = os.Getenv("DASHBOARD_INTERVAL")
+	}
 
+	if intervalString != "" {
 		if strings.Contains(intervalString, "s") {
 			number := strings.TrimSuffix(intervalString, "s")
 			theTime, err := strconv.Atoi(number)
@@ -144,6 +167,8 @@ func intervalCommand(input interface{}) time.Duration {
 	return interval
 }
 
+//
+//
 func PrintConfigs(configs Configs) {
 	fmt.Printf("Interface:  %s\n", configs.Interface)
 	fmt.Printf("Port:       %s\n", configs.Port)
