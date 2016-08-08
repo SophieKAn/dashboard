@@ -39,7 +39,6 @@ Options:
   -i, --interval=(<sec>s|<min>m|<hr>h)`
 
 	defaultConfig     = "./static/config.json"
-	defaultInterval   = 5 * time.Second
 	linuxConfigPath   = "/etc/dashboard/config.json"
 	freeBSDConfigPath = "/usr/local/etc/dashboard/config.json"
 )
@@ -56,12 +55,12 @@ func main() {
 	configs.Configfile = configCommand(args["--config"])
 	configs.Interface, configs.Port = bindCommand(args["--bind"])
 	configs.Interval = intervalCommand(args["--interval"])
-	configs.Debug = args["--debug"].(bool)
+	configs.Debug = debugCommand(args["--debug"])
 
 	/* > Get configs from config file */
 
 	PrintConfigs(configs)
-	//Server(configs)
+	Server(configs)
 }
 
 func configCommand(filename interface{}) string {
@@ -159,6 +158,15 @@ func intervalCommand(input interface{}) time.Duration {
 	return interval
 }
 
+func debugCommand(input interface{}) bool {
+	db := input.(bool)
+	db2, err := strconv.ParseBool(os.Getenv("DASHBOARD_DEBUG"))
+	fmt.Println(db2)
+	Check(err)
+
+	return db || db2
+
+}
 func PrintConfigs(configs Configs) {
 	fmt.Printf("Interface:  %s\n", configs.Interface)
 	fmt.Printf("Port:       %s\n", configs.Port)
