@@ -1,6 +1,6 @@
 {
 	"interface": "localhost",
-	"port": 8080,
+	"port": "8080",
 	"interval": "10s",
 	"labsetup": [
 								{
