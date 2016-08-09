@@ -16,21 +16,12 @@ type Machine struct {
 	Status   int    `json:"status"`
 }
 
-func Server(configs Configs) {
+func RunServer(configs Config) {
 
 	/* > Get lab configuration */
 	settings := GetConfig(configs.Configfile)
 	allMachines := GetMachines(settings["labsetup"].([]interface{}))
 
-	if configs.Interface == "" {
-		configs.Interface = settings["interface"].(string)
-	}
-	if configs.Port == "" {
-		configs.Port = settings["port"].(string)
-	}
-	if configs.Interval == 0 {
-		configs.Interval = IntervalCommand(settings["interval"])
-	}
 
 	/* > Run the Hub */
 	hub := newHub()
