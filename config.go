@@ -5,13 +5,13 @@ package main
 ///////////////
 
 import (
-	"time"
-	"os"
-	"strings"
-	"strconv"
 	"fmt"
 	"github.com/docopt/docopt-go"
+	"os"
 	"regexp"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type Config struct {
@@ -51,7 +51,8 @@ func parseEnvs(c *Config, enVars map[string]string) {
 	if c.Interface == "" || c.Port == "" {
 		c.Port, c.Interface = splitInterfacePort(enVars["DASHBOARD_BIND"])
 	}
-	dbg, err := strconv.ParseBool(enVars["DASHBOARD_DEBUG"]); Check(err)
+	dbg, err := strconv.ParseBool(enVars["DASHBOARD_DEBUG"])
+	Check(err)
 
 	c.Debug = c.Debug || dbg
 
@@ -79,7 +80,8 @@ func parseConfig(c *Config, cfgFile string) {
 //
 //
 func getArgs() map[string]interface{} {
-	args, err := docopt.Parse(Usage, nil, true, Version, false); Check(err)
+	args, err := docopt.Parse(Usage, nil, true, Version, false)
+	Check(err)
 
 	return args
 }
@@ -162,7 +164,7 @@ func splitInterfacePort(inputString string) (string, string) {
 		}
 
 	} else {
-			intf = inputString
+		intf = inputString
 	}
 	return intf, prt
 }
@@ -202,7 +204,8 @@ func getInterval(intervalString string) time.Duration {
 //
 func stringToTime(intervalString string, timeUnit string) time.Duration {
 	number := strings.TrimSuffix(intervalString, timeUnit)
-	theTime, err := strconv.Atoi(number); Check(err)
+	theTime, err := strconv.Atoi(number)
+	Check(err)
 
 	return time.Duration(theTime)
 }
