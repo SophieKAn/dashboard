@@ -25,7 +25,7 @@ func RunServer(configs Config) {
 
 	/* > Get lab configuration */
 	settings := GetConfig(configs.Configfile)
-	allMachines := GetMachines(settings["labsetup"].([]interface{}))
+	allMachines := GetMachines(settings["machineRanges"].([]interface{}))
 
 	/* > Run the Hub */
 	hub := newHub()
