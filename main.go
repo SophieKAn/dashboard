@@ -22,10 +22,8 @@ Options:
 )
 
 func main() {
-
 	var configs Config
 	configs.Configure()
 
 	RunServer(configs)
 }
-

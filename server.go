@@ -18,10 +18,14 @@ type Machine struct {
 
 func RunServer(configs Config) {
 
+	fmt.Printf("interface: %s\n", configs.Interface)
+	fmt.Printf("port:      %s\n", configs.Port)
+	fmt.Printf("interval:  %s\n", configs.Interval)
+	fmt.Printf("debug:     %t\n", configs.Debug)
+
 	/* > Get lab configuration */
 	settings := GetConfig(configs.Configfile)
 	allMachines := GetMachines(settings["labsetup"].([]interface{}))
-
 
 	/* > Run the Hub */
 	hub := newHub()

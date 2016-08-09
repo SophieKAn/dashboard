@@ -51,8 +51,11 @@ func parseEnvs(c *Config, enVars map[string]string) {
 	if c.Interface == "" || c.Port == "" {
 		c.Port, c.Interface = splitInterfacePort(enVars["DASHBOARD_BIND"])
 	}
+
 	dbg, err := strconv.ParseBool(enVars["DASHBOARD_DEBUG"])
-	Check(err)
+	if err != nil {
+		dbg = false
+	}
 
 	c.Debug = c.Debug || dbg
 

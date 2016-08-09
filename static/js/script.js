@@ -3,7 +3,10 @@ function initializePage(url) {
   req.onreadystatechange = () => {
     if (req.readyState === XMLHttpRequest.DONE) {
       if (req.status === 200) {
-        let result = JSON.parse(req.responseText);
+        let json = JSON.parse(req.responseText);
+				let result = json["labsetup"];
+				let interf = json["interface"];
+				let port = json["port"];
         let body = document.getElementsByTagName('body')[0];
         let widget = document.createElement('ul');
         widget.className = "widget";
@@ -20,7 +23,7 @@ function initializePage(url) {
             createLabMachine(cs_lab, i);
           }
         });
-        updater();
+        updater(interf, port);
       }
     }
   }
@@ -38,8 +41,8 @@ function createLabMachine(cs_lab, i) {
 
 
 
-function updater() {
-  var conn = new WebSocket("ws://localhost:8080/upd");
+function updater(interf, port) {
+  var conn = new WebSocket("ws://" + interf + ":" + port + "/upd");
   conn.onclose = function(evt) {
     console.log("Connection closed");
   }
