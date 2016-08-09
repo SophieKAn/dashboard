@@ -4,7 +4,7 @@ function initializePage(url) {
     if (req.readyState === XMLHttpRequest.DONE) {
       if (req.status === 200) {
         let json = JSON.parse(req.responseText);
-				let result = json["labsetup"];
+				let result = json["machineRanges"];
 				let interf = json["interface"];
 				let port = json["port"];
         let body = document.getElementsByTagName('body')[0];

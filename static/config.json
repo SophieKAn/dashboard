@@ -1,54 +1,54 @@
 {
-	"interface": "localhost",
-	"port": "8080",
-	"interval": "10s",
-	"labsetup": [
-								{
-									"prefix": "***REMOVED***",
-									"start": 0,
-									"end": 25
-								},
-								{
-									"prefix": "***REMOVED***",
-									"start": 0,
-									"end": 25
-								},
-								{
-									"prefix": "***REMOVED***",
-									"start": 1,
-									"end": 20
-								},
-								{
-									"prefix": "***REMOVED***",
-									"start": 0,
-									"end": 21
-								},
-								{
-									"prefix": "***REMOVED***",
-									"start": 1,
-									"end": 20
-								},
-								{
-									"prefix": "***REMOVED***",
-									"start": 1,
-									"end": 25
-								},
-								{
-									"prefix": "linux",
-									"start": 1,
-									"end": 12
-								}
-							],
-	"portsetup": [
-									{
-										"name": "linux",
-										"port": ***REMOVED***,
-										"color":"MediumSeaGreen"
-									},
-									{
-										"name": "windows",
-										"port": ***REMOVED***,
-										"color": "MediumSlateBlue"
-									}
-								]
+  "interface": "localhost",
+  "port": "8080",
+  "interval": "10s",
+  "machineRanges": [
+    {
+      "prefix": "***REMOVED***",
+      "start": 0,
+      "end": 25
+    },
+    {
+      "prefix": "***REMOVED***",
+      "start": 0,
+      "end": 25
+    },
+    {
+      "prefix": "***REMOVED***",
+      "start": 1,
+      "end": 20
+    },
+    {
+      "prefix": "***REMOVED***",
+      "start": 0,
+      "end": 21
+    },
+    {
+      "prefix": "***REMOVED***",
+      "start": 1,
+      "end": 20
+    },
+    {
+      "prefix": "***REMOVED***",
+      "start": 1,
+      "end": 25
+    },
+    {
+      "prefix": "linux",
+      "start": 1,
+      "end": 12
+    }
+  ],
+  "machineIdentifiers": [
+    {
+      "name": "linux",
+      "port": ***REMOVED***,
+      "color":"MediumSeaGreen"
+    },
+    {
+      "name": "windows",
+      "port": ***REMOVED***,
+      "color": "MediumSlateBlue"
+    }
+  ]
 }
