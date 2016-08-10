@@ -15,13 +15,13 @@ import (
 )
 
 type Config struct {
-	Configfile         string                   `json:-`
-	Interface          string                   `json:interface`
-	Port               string                   `json:port`
-	Debug              bool                     `json:-`
-	Interval           time.Duration            `json:-`
-  MachineRanges      []map[string]interface{} `json:machineRanges`
-  MachineIdentifiers []map[string]interface{} `json:machineIdentifiers`
+	Configfile         string                   `json:"-"`
+	Interface          string                   `json:"interface"`
+	Port               string                   `json:"port"`
+	Debug              bool                     `json:"-"`
+	Interval           time.Duration            `json:"-"`
+  MachineRanges      []map[string]interface{} `json:"machineRanges"`
+  MachineIdentifiers []map[string]interface{} `json:"machineIdentifiers"`
 }
 
 const (
