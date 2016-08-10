@@ -49,11 +49,6 @@
       "name": "windows",
       "port": "***REMOVED***",
       "color": "MediumSlateBlue"
-    },
-		{
-			"name": "inaccessible",
-			"port": "",
-			"color": "gray"
-		}
+    }
   ]
 }

@@ -4,15 +4,11 @@ function initializePage(url) {
     if (req.readyState === XMLHttpRequest.DONE) {
       if (req.status === 200) {
         let json = JSON.parse(req.responseText);
-        let result = json["machineRanges"];
-        let interf = json["interface"];
-        let port = json["port"];
-        let machineIdentifiers = json["machineIdentifiers"];
         let body = document.getElementsByTagName('body')[0];
         let widget = document.createElement('ul');
         widget.className = "widget";
         body.appendChild(widget);
-        result.forEach(l => {
+        json["machineRanges"].forEach(l => {
           let cs_lab = document.createElement('ul');
           cs_lab.className = "cs_lab";
           let lab_title = document.createElement('header');
@@ -24,7 +20,7 @@ function initializePage(url) {
             createLabMachine(cs_lab, i);
           }
         });
-        updater(interf, port, machineIdentifiers);
+        updater(json["interface"], json["port"], json["machineIdentifiers"]);
       }
     }
   }
@@ -56,14 +52,20 @@ function updater(interf, port, machineIdentifiers) {
 
 
 function changeStatus(machineData, machineIdentifiers) {
-  console.log(machineIdentifiers);
   machineData.forEach(m => {
     let el = document.getElementById(m.hostname);
-      machineIdentifiers.forEach(s => {
-        if (m.status == s.name) {
-          el.style.background = s.color;
-        }
-      });
+    machineIdentifiers.forEach(s => {
+      if (m.status == s.name) {
+        el.style.background = s.color;
+      }
+    });
+	  var idArray = [];
+	  for (var i in machineIdentifiers) {
+      idArray.push(machineIdentifiers[i].name);
+    }
+    if (!isInArray(m.status, idArray)) {
+			el.style.background = "gray";
+		}
   });
 }
 
@@ -71,4 +73,8 @@ function pad(n) {
   // http://stackoverflow.com/a/8089938/6279238
   // only for positive integers
   return (n < 10) ? ("0" + n.toString()) : String(n);
+}
+
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
 }
