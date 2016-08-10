@@ -13,7 +13,7 @@ import (
 
 type Machine struct {
 	Hostname string `json:"hostname"`
-	Status   int    `json:"status"`
+	Status   string    `json:"status"`
 }
 
 func RunServer(configs Config) {
@@ -50,7 +50,7 @@ func RunServer(configs Config) {
 	/* > Update forever */
 	var updates []*Machine
 	for {
-		for machine := range UpdateStatuses(allMachines) {
+		for machine := range UpdateStatuses(allMachines, configs) {
 			updates = append(updates, machine)
 		}
 
