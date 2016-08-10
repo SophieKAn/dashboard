@@ -15,17 +15,19 @@ import (
 )
 
 type Config struct {
-	Configfile string
-	Interface  string
-	Port       string
-	Debug      bool
-	Interval   time.Duration
+	Configfile         string                   `json:-`
+	Interface          string                   `json:interface`
+	Port               string                   `json:port`
+	Debug              bool                     `json:-`
+	Interval           time.Duration            `json:-`
+  MachineRanges      []map[string]interface{} `json:machineRanges`
+  MachineIdentifiers []map[string]interface{} `json:machineIdentifiers`
 }
 
 const (
 	defaultConfig     = "./static/config.json"
 	linuxConfigPath   = "/etc/dashboard/config.json"
-	freeBSDConfigPath = "usr/local/etc/dashboard/config.json"
+	freeBSDConfigPath = "/usr/local/etc/dashboard/config.json"
 )
 
 //
@@ -83,6 +85,25 @@ func parseConfig(c *Config, cfgFile string) {
 	if c.Interval == 0 {
 		c.Interval = getInterval(cfgfile["interval"].(string))
 	}
+
+	machineRangesInterface := cfgfile["machineRanges"].([]interface{})
+	machineIdentifiersInterface := cfgfile["machineIdentifiers"].([]interface{})
+
+	machineRangesList := make([]map[string]interface{}, 0)
+	for labIndex := range machineRangesInterface {
+		aLab := machineRangesInterface[labIndex].(map[string]interface{})
+		machineRangesList = append(machineRangesList, aLab)
+
+	}
+	c.MachineRanges = machineRangesList
+
+	machineIdentifiersList := make([]map[string]interface{}, 0)
+	for labIndex := range machineIdentifiersInterface {
+		anLab := machineIdentifiersInterface[labIndex].(map[string]interface{})
+		machineIdentifiersList = append(machineIdentifiersList, anLab)
+	}
+
+  c.MachineIdentifiers = machineIdentifiersList
 }
 
 //

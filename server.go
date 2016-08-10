@@ -18,14 +18,15 @@ type Machine struct {
 
 func RunServer(configs Config) {
 
-	fmt.Printf("interface: %s\n", configs.Interface)
-	fmt.Printf("port:      %s\n", configs.Port)
-	fmt.Printf("interval:  %s\n", configs.Interval)
-	fmt.Printf("debug:     %t\n", configs.Debug)
+  if configs.Debug {
+					fmt.Printf("interface: %s\n", configs.Interface)
+					fmt.Printf("port:      %s\n", configs.Port)
+					fmt.Printf("interval:  %s\n", configs.Interval)
+					fmt.Printf("debug:     %t\n", configs.Debug)
+  }
 
 	/* > Get lab configuration */
-	settings := GetConfig(configs.Configfile)
-	allMachines := GetMachines(settings["machineRanges"].([]interface{}))
+	allMachines := GetMachines(configs.MachineRanges)
 
 	/* > Run the Hub */
 	hub := newHub()
@@ -33,6 +34,10 @@ func RunServer(configs Config) {
 
 	/* > Start the server */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
+  http.HandleFunc("/config.json", func(w http.ResponseWriter, r *http.Request) {
+    data, _ := json.Marshal(configs)
+    fmt.Fprintf(w, string(data))
+  })
 	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
 		ServeUpdates(hub, allMachines, w, r)
 	})
