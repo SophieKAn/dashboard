@@ -42,12 +42,12 @@
   "machineIdentifiers": [
     {
       "name": "linux",
-      "port": ***REMOVED***,
+      "port": "***REMOVED***",
       "color":"MediumSeaGreen"
     },
     {
       "name": "windows",
-      "port": ***REMOVED***,
+      "port": "***REMOVED***",
       "color": "MediumSlateBlue"
     }
   ]

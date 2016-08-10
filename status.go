@@ -11,16 +11,10 @@ import (
 	"time"
 )
 
-const (
-	LINUX        = 0
-	WINDOWS      = 1
-	INACCESSIBLE = 2
-)
-
 // UpdateStatuses takes the list of Machine pointers and iterates through them
 // using nested goroutines to call Update for each one. It waits until all
 // goroutines are finished before returning.
-func UpdateStatuses(machines []*Machine) chan *Machine {
+func UpdateStatuses(machines []*Machine, config Config) chan *Machine {
 	fmt.Println("updating")
 	out := make(chan *Machine)
 	go func(chan *Machine) {
@@ -30,7 +24,7 @@ func UpdateStatuses(machines []*Machine) chan *Machine {
 
 			go func(m *Machine) {
 				defer wg.Done()
-				m.Update(out)
+				m.Update(out, config)
 			}(machine)
 		}
 		wg.Wait()
@@ -41,8 +35,8 @@ func UpdateStatuses(machines []*Machine) chan *Machine {
 
 // Update takes an output channel. For machine m, it checks for a change in
 // status, and if it has changed sends itself along the 'out' channel.
-func (m *Machine) Update(out chan *Machine) {
-	newStatus := GetStatus(m.Hostname)
+func (m *Machine) Update(out chan *Machine, config Config) {
+	newStatus := GetStatus(m.Hostname, config)
 
 	if newStatus != m.Status {
 		m.Status = newStatus
@@ -53,14 +47,15 @@ func (m *Machine) Update(out chan *Machine) {
 // GetStatus takes a Hostname and checks whether it is available on port ***REMOVED***
 // or ***REMOVED*** (linux and windows respectively). If not accessible on either port,
 // that host is deemed inaccesssible.
-func GetStatus(hostname string) int {
-	if Accessible(hostname, "***REMOVED***") {
-		return LINUX
-	} else if Accessible(hostname, "***REMOVED***") {
-		return WINDOWS
-	} else {
-		return INACCESSIBLE
+func GetStatus(hostname string, config Config) string {
+
+	for _, identifier := range config.MachineIdentifiers {
+		if Accessible(hostname, identifier["port"].(string)) {
+			return identifier["name"].(string)
+		}
 	}
+
+	return "inaccessible"
 }
 
 // Accessible takes a hostname and a port number and tries to establish a

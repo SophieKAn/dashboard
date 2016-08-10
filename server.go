@@ -13,20 +13,20 @@ import (
 
 type Machine struct {
 	Hostname string `json:"hostname"`
-	Status   int    `json:"status"`
+	Status   string    `json:"status"`
 }
 
-func RunServer(configs Config) {
+func RunServer(config Config) {
 
-	if configs.Debug {
-		fmt.Printf("interface: %s\n", configs.Interface)
-		fmt.Printf("port:      %s\n", configs.Port)
-		fmt.Printf("interval:  %s\n", configs.Interval)
-		fmt.Printf("debug:     %t\n", configs.Debug)
+	if config.Debug {
+		fmt.Printf("interface: %s\n", config.Interface)
+		fmt.Printf("port:      %s\n", config.Port)
+		fmt.Printf("interval:  %s\n", config.Interval)
+		fmt.Printf("debug:     %t\n", config.Debug)
 	}
 
 	/* > Get lab configuration */
-	allMachines := GetMachines(configs.MachineRanges)
+	allMachines := GetMachines(config.MachineRanges)
 
 	/* > Run the Hub */
 	hub := newHub()
@@ -35,7 +35,7 @@ func RunServer(configs Config) {
 	/* > Start the server */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/config.json", func(w http.ResponseWriter, r *http.Request) {
-		data, _ := json.Marshal(configs)
+		data, _ := json.Marshal(config)
 		fmt.Fprintf(w, string(data))
 	})
 	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
@@ -43,14 +43,14 @@ func RunServer(configs Config) {
 	})
 
 	go func() {
-		err := http.ListenAndServe(configs.Interface+":"+configs.Port, nil)
+		err := http.ListenAndServe(config.Interface+":"+config.Port, nil)
 		Check(err)
 	}()
 
 	/* > Update forever */
 	var updates []*Machine
 	for {
-		for machine := range UpdateStatuses(allMachines) {
+		for machine := range UpdateStatuses(allMachines, config) {
 			updates = append(updates, machine)
 		}
 
@@ -63,7 +63,7 @@ func RunServer(configs Config) {
 			fmt.Println("no changes")
 		}
 
-		time.Sleep(configs.Interval)
+		time.Sleep(config.Interval)
 	}
 }
 
