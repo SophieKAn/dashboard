@@ -4,9 +4,10 @@ function initializePage(url) {
     if (req.readyState === XMLHttpRequest.DONE) {
       if (req.status === 200) {
         let json = JSON.parse(req.responseText);
-				let result = json["machineRanges"];
-				let interf = json["interface"];
-				let port = json["port"];
+        let result = json["machineRanges"];
+        let interf = json["interface"];
+        let port = json["port"];
+        let machineIdentifiers = json["machineIdentifiers"];
         let body = document.getElementsByTagName('body')[0];
         let widget = document.createElement('ul');
         widget.className = "widget";
@@ -23,7 +24,7 @@ function initializePage(url) {
             createLabMachine(cs_lab, i);
           }
         });
-        updater(interf, port);
+        updater(interf, port, machineIdentifiers);
       }
     }
   }
@@ -41,7 +42,7 @@ function createLabMachine(cs_lab, i) {
 
 
 
-function updater(interf, port) {
+function updater(interf, port, machineIdentifiers) {
   var conn = new WebSocket("ws://" + interf + ":" + port + "/upd");
   conn.onclose = function(evt) {
     console.log("Connection closed");
@@ -49,21 +50,20 @@ function updater(interf, port) {
   conn.onmessage = function(evt) {
     let machineData = JSON.parse(evt.data);
     console.log("updating");
-    changeStatus(machineData);
+    changeStatus(machineData, machineIdentifiers);
   }
 }
 
 
-function changeStatus(machineData) {
+function changeStatus(machineData, machineIdentifiers) {
+  console.log(machineIdentifiers);
   machineData.forEach(m => {
     let el = document.getElementById(m.hostname);
-      if (m.status == 0) {
-        el.style.background = "MediumSeaGreen";
-      } else if (m.status == 1) {
-        el.style.background = "MediumSlateBlue";
-      } else {
-        el.style.background = "gray";
-      }
+      machineIdentifiers.forEach(s => {
+        if (m.status == s.name) {
+          el.style.background = s.color;
+        }
+      });
   });
 }
 
