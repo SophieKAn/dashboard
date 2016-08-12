@@ -12,8 +12,8 @@ import (
 	"os"
 )
 
-// Check takes an error, and prints the error if it isn't nil.
-func Check(e error) {
+// check takes an error, and prints the error if it isn't nil.
+func check(e error) {
 	if e != nil {
 		log.Printf("Error: %v\n", e)
 		os.Exit(1)
@@ -22,14 +22,14 @@ func Check(e error) {
 
 // GetConfig takes the name of the configuration file (currently "config.json")
 // and attempts to open/read file then unmarshal it into a list of interfaces.
-func GetConfig(fileName string) map[string]interface{} {
+func getConfig(fileName string) map[string]interface{} {
 
 	configFile, err := ioutil.ReadFile(fileName)
-	Check(err)
+	check(err)
 
 	var configuration map[string]interface{}
 	err = json.Unmarshal(configFile, &configuration)
-	Check(err)
+	check(err)
 
 	return configuration
 }
@@ -37,7 +37,7 @@ func GetConfig(fileName string) map[string]interface{} {
 // GetMachines takes the unmarshalled config.json and constructs a slice of
 // pointers to Machine structs representing all the machines indicated in the
 // config.
-func GetMachines(labs []map[string]interface{}) []*Machine {
+func getMachines(labs []map[string]interface{}) []*Machine {
 	var allMachines []*Machine
 	for _, lab := range labs {
 		prefix := lab["prefix"].(string)

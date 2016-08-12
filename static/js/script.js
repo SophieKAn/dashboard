@@ -3,16 +3,12 @@ function initializePage(url) {
   req.onreadystatechange = () => {
     if (req.readyState === XMLHttpRequest.DONE) {
       if (req.status === 200) {
-        let json = JSON.parse(req.responseText);
-        let result = json["machineRanges"];
-        let interf = json["interface"];
-        let port = json["port"];
-        let machineIdentifiers = json["machineIdentifiers"];
+        let result = JSON.parse(req.responseText);
         let body = document.getElementsByTagName('body')[0];
         let widget = document.createElement('ul');
         widget.className = "widget";
         body.appendChild(widget);
-        result.forEach(l => {
+        result.machineRanges.forEach(l => {
           let cs_lab = document.createElement('ul');
           cs_lab.className = "cs_lab";
           let lab_title = document.createElement('header');
@@ -24,7 +20,7 @@ function initializePage(url) {
             createLabMachine(cs_lab, i);
           }
         });
-        updater(interf, port, machineIdentifiers);
+        updater(result);
       }
     }
   }
@@ -42,28 +38,30 @@ function createLabMachine(cs_lab, i) {
 
 
 
-function updater(interf, port, machineIdentifiers) {
-  var conn = new WebSocket("ws://" + interf + ":" + port + "/upd");
+function updater(result) {
+  var conn = new WebSocket("ws://" + result.interface + ":" + result.port + "/upd");
   conn.onclose = function(evt) {
     console.log("Connection closed");
   }
   conn.onmessage = function(evt) {
     let machineData = JSON.parse(evt.data);
     console.log("updating");
-    changeStatus(machineData, machineIdentifiers);
+    changeStatus(machineData, result.machineIdentifiers);
   }
 }
 
 
 function changeStatus(machineData, machineIdentifiers) {
-  console.log(machineIdentifiers);
   machineData.forEach(m => {
     let el = document.getElementById(m.hostname);
-      machineIdentifiers.forEach(s => {
-        if (m.status == s.name) {
-          el.style.background = s.color;
-        }
-      });
+    machineIdentifiers.forEach(s => {
+      if (m.status == s.name) {
+        el.style.background = s.color;
+      }
+    });
+		if (!machineIdentifiers.map(p => p.name).includes(m.status)) {
+			el.style.background = "gray";
+		}
   });
 }
 

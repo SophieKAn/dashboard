@@ -20,14 +20,28 @@ type Config struct {
 	Port               string                   `json:"port"`
 	Debug              bool                     `json:"-"`
 	Interval           time.Duration            `json:"-"`
-  MachineRanges      []map[string]interface{} `json:"machineRanges"`
-  MachineIdentifiers []map[string]interface{} `json:"machineIdentifiers"`
+	MachineRanges      []map[string]interface{} `json:"machineRanges"`
+	MachineIdentifiers []map[string]interface{} `json:"machineIdentifiers"`
 }
 
 const (
-	defaultConfig     = "./static/config.json"
 	linuxConfigPath   = "/etc/dashboard/config.json"
 	freeBSDConfigPath = "/usr/local/etc/dashboard/config.json"
+
+	usage = `Start a web server to display current usage of labs.
+
+Usage:
+  dashboard [options]
+  dashboard --version
+  dashboard -h | --help
+
+Options:
+  --debug                                             Turn on debugging output.
+  -b, --bind=(<interface>:<port>|<interface>|:<port>) Set the interface and port for the server.
+  -c, --config=<file>                                 Specify a configuration file.
+  -i, --interval=(<sec>s|<min>m|<hr>h)`
+
+	version = "dashboard 1.0.0"
 )
 
 //
@@ -74,7 +88,7 @@ func parseEnvs(c *Config, enVars map[string]string) {
 //
 //
 func parseConfig(c *Config, cfgFile string) {
-	cfgfile := GetConfig(cfgFile)
+	cfgfile := getConfig(cfgFile)
 
 	if c.Interface == "" {
 		c.Interface = cfgfile["interface"].(string)
@@ -109,8 +123,8 @@ func parseConfig(c *Config, cfgFile string) {
 //
 //
 func getArgs() map[string]interface{} {
-	args, err := docopt.Parse(Usage, nil, true, Version, false)
-	Check(err)
+	args, err := docopt.Parse(usage, nil, true, version, false)
+	check(err)
 
 	return args
 }
@@ -234,7 +248,7 @@ func getInterval(intervalString string) time.Duration {
 func stringToTime(intervalString string, timeUnit string) time.Duration {
 	number := strings.TrimSuffix(intervalString, timeUnit)
 	theTime, err := strconv.Atoi(number)
-	Check(err)
+	check(err)
 
 	return time.Duration(theTime)
 }
