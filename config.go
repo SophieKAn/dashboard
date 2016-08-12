@@ -20,8 +20,8 @@ type Config struct {
 	Port               string                   `json:"port"`
 	Debug              bool                     `json:"-"`
 	Interval           time.Duration            `json:"-"`
-  MachineRanges      []map[string]interface{} `json:"machineRanges"`
-  MachineIdentifiers []map[string]interface{} `json:"machineIdentifiers"`
+	MachineRanges      []map[string]interface{} `json:"machineRanges"`
+	MachineIdentifiers []map[string]interface{} `json:"machineIdentifiers"`
 }
 
 const (
