@@ -3,7 +3,7 @@
 Start a web server to display current usage of labs.
 
 # Preconditions
-1. `dashboard` requires `go` to be installed.
+1. `dashboard` requires `go` be installed.
 
 # Installation
 `...`
@@ -83,6 +83,7 @@ as well as what color will show up on the page.
 
 ### Command-line Flags
 ```
+Usage:
 	dashboard [options]
 	dashboard --version
 	dashboard -h | --help
