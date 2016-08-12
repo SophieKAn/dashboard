@@ -114,7 +114,7 @@ guidelines to ensure coherence throughout the application.
 ## Shout-outs
 - Much thanks to [Nicolas Gallagher] for his generic [issue guidelines].
 
-[repo]: https://gitlab.***REMOVED***/cs-support/adctl
+[repo]: https://gitlab.***REMOVED***/cs-support/dashboard
 [merge request]: https://gitlab.***REMOVED***/help/workflow/forking_workflow.md#merging-upstream
 [GitLab Flow]: http://doc.gitlab.com/ee/workflow/gitlab_flow.html
 [Effective Go]: https://golang.org/doc/effective_go.html
