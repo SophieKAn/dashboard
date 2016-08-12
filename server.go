@@ -16,7 +16,7 @@ type Machine struct {
 	Status   string    `json:"status"`
 }
 
-func RunServer(config Config) {
+func runServer(config Config) {
 
 	if config.Debug {
 		fmt.Printf("interface: %s\n", config.Interface)
@@ -26,7 +26,7 @@ func RunServer(config Config) {
 	}
 
 	/* > Get lab configuration */
-	allMachines := GetMachines(config.MachineRanges)
+	allMachines := getMachines(config.MachineRanges)
 
 	/* > Run the Hub */
 	hub := newHub()
@@ -39,24 +39,24 @@ func RunServer(config Config) {
 		fmt.Fprintf(w, string(data))
 	})
 	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
-		ServeUpdates(hub, allMachines, w, r)
+		serveUpdates(hub, allMachines, w, r)
 	})
 
 	go func() {
 		err := http.ListenAndServe(config.Interface+":"+config.Port, nil)
-		Check(err)
+		check(err)
 	}()
 
 	/* > Update forever */
 	var updates []*Machine
 	for {
-		for machine := range UpdateStatuses(allMachines, config) {
+		for machine := range updateStatuses(allMachines, config) {
 			updates = append(updates, machine)
 		}
 
 		if updates != nil {
 			message, err := json.Marshal(updates)
-			Check(err)
+			check(err)
 			hub.broadcast <- message
 			updates = nil
 		} else {
@@ -67,10 +67,10 @@ func RunServer(config Config) {
 	}
 }
 
-func ServeUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *http.Request) {
+func serveUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *http.Request) {
 	/* > Open the websocket connections. */
 	ws, err := upgrader.Upgrade(w, r, nil)
-	Check(err)
+	check(err)
 	defer ws.Close()
 
 	client := &Client{hub, ws, make(chan []byte)}

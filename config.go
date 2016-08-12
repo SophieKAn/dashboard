@@ -88,7 +88,7 @@ func parseEnvs(c *Config, enVars map[string]string) {
 //
 //
 func parseConfig(c *Config, cfgFile string) {
-	cfgfile := GetConfig(cfgFile)
+	cfgfile := getConfig(cfgFile)
 
 	if c.Interface == "" {
 		c.Interface = cfgfile["interface"].(string)
@@ -124,7 +124,7 @@ func parseConfig(c *Config, cfgFile string) {
 //
 func getArgs() map[string]interface{} {
 	args, err := docopt.Parse(usage, nil, true, version, false)
-	Check(err)
+	check(err)
 
 	return args
 }
@@ -248,7 +248,7 @@ func getInterval(intervalString string) time.Duration {
 func stringToTime(intervalString string, timeUnit string) time.Duration {
 	number := strings.TrimSuffix(intervalString, timeUnit)
 	theTime, err := strconv.Atoi(number)
-	Check(err)
+	check(err)
 
 	return time.Duration(theTime)
 }

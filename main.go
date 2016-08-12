@@ -24,5 +24,5 @@ func main() {
 	var settings Config
 	settings.Configure()
 
-	RunServer(settings)
+	runServer(settings)
 }
