@@ -124,8 +124,8 @@ func interfaceToList(cfgfile map[string]interface{}, name string) []map[string]i
 	return groupList
 }
 
-// getEnvars
-//
+// getEnvars creates a map of all the necessary environment variables for the
+// program.
 func getEnVars() map[string]string {
 	envMap := make(map[string]string)
 
@@ -136,8 +136,10 @@ func getEnVars() map[string]string {
 	return envMap
 }
 
-// getConfigfile
-//
+// getConfigfile gets passed the name for the config file that was or wasn't
+// given on the command line. If there wasn't one there it check environment
+// variables, then default linux and freeBSD path. If it can't find a config
+// file, the program will not proceed.
 func getConfigfile(filename interface{}) string {
 	var config string
 
@@ -150,15 +152,15 @@ func getConfigfile(filename interface{}) string {
 	} else if _, err := os.Stat(freeBSDConfigPath); err == nil {
 		config = freeBSDConfigPath
 	} else {
-		fmt.Println("This program requires a config file to run. See documentation")
+		fmt.Println("This program requires a config file to run. Please refer to documentation.")
 		os.Exit(1)
 	}
 
 	return config
 }
 
-// bindArg
-//
+// bindArg parses the command-line argument for binding interface to port,
+// then returns the acquired interface and port.
 func bindArg(input interface{}) (string, string) {
 	var interf, port string
 
@@ -170,8 +172,8 @@ func bindArg(input interface{}) (string, string) {
 	return interf, port
 }
 
-// intervalArg
-//
+// intervalArg interpretes the command-line interval argument if there is one.
+// If not, it returns zero.
 func intervalArg(input interface{}) time.Duration {
 	var interval time.Duration
 
@@ -183,8 +185,8 @@ func intervalArg(input interface{}) time.Duration {
 	return interval
 }
 
-// splitInterfacePort
-//
+// splitInterfacePort takes a string taken from the command line or an 
+// environment variable and splits it using a regex.
 func splitInterfacePort(inputString string) (string, string) {
 	var interf, port string
 
@@ -207,8 +209,6 @@ func splitInterfacePort(inputString string) (string, string) {
 	return interf, port
 }
 
-// mapSubexpNames
-//
 func mapSubexpNames(m, n []string) map[string]string {
 	/* http://stackoverflow.com/a/30483899/6279238 */
 	/* Code found in comment on main answer */
@@ -220,8 +220,8 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-// getTimeInterval
-//
+// getTimeInterval finds a time.Duration depending on the number and time units
+// given on the command line or from environment variables.
 func getTimeInterval(intervalString string) time.Duration {
 	var interval time.Duration
 
@@ -238,8 +238,8 @@ func getTimeInterval(intervalString string) time.Duration {
 	return interval
 }
 
-// stringToTime
-//
+// stringToTime takes the string representing the update interval and converts
+// it into a time.Duration type.
 func stringToTime(intervalString string, timeUnit string) time.Duration {
 	durationString := strings.TrimSuffix(intervalString, timeUnit)
 	duration, err := strconv.Atoi(durationString)

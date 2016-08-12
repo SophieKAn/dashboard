@@ -16,6 +16,9 @@ type Machine struct {
 	Status   string `json:"status"`
 }
 
+// runServer takes the config struct. It runs a hub, starts the server, and
+// continually updates the status of all the machines, then broadcasting those
+// changes to all connected clients in the hub.
 func runServer(config *Config) {
 	/* > Check for debug mode */
 	debugMode(config)
@@ -63,8 +66,10 @@ func runServer(config *Config) {
 	}
 }
 
+// serveUpdates responds to a websocket connection by creating a 'client',
+// sending said client to the hub, sending it the set of all machines, and
+// finally calling writePump().
 func serveUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *http.Request) {
-	/* > Open the websocket connections. */
 	ws, err := upgrader.Upgrade(w, r, nil)
 	check(err)
 	defer ws.Close()
@@ -78,6 +83,8 @@ func serveUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *ht
 	client.writePump()
 }
 
+// debugMode checks the config to see if Debug is true, and if so prints
+// the current settings.
 func debugMode(config *Config) {
 	if config.Debug {
 		fmt.Printf("interface: %s\n", config.Interface)
