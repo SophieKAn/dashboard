@@ -44,16 +44,17 @@ Options:
 	version = "dashboard 1.0.0"
 )
 
-//
-//
+// Configure method on struct Config parses command-line arguments, environment
+// variables, and the config file in that order, to glean settings for running
+// the server.
 func (c *Config) Configure() {
 	parseArgs(c, getArgs())
 	parseEnvs(c, getEnVars())
 	parseConfig(c, c.Configfile)
 }
 
-//
-//
+// parseArgs parses the command-line arguments and calls functions to interpret
+// each one of them.
 func parseArgs(c *Config, args map[string]interface{}) {
 	c.Configfile = getConfigfile(args["--config"])
 	c.Interface, c.Port = bindArg(args["--bind"])
@@ -61,8 +62,8 @@ func parseArgs(c *Config, args map[string]interface{}) {
 	c.Debug = args["--debug"].(bool)
 }
 
-//
-//
+// parseEnvs parses a map of relevant environment variables and uses the values
+// if they aren't already present from the command line.
 func parseEnvs(c *Config, enVars map[string]string) {
 	i, p := splitInterfacePort(enVars["BIND"])
 	if c.Interface == "" {
@@ -78,7 +79,6 @@ func parseEnvs(c *Config, enVars map[string]string) {
 		dbg = false
 	}
 
-
 	if c.Interval == 0 {
 		c.Interval = getTimeInterval(enVars["INTERVAL"])
 	}
@@ -86,8 +86,8 @@ func parseEnvs(c *Config, enVars map[string]string) {
 	c.Debug = c.Debug || dbg
 }
 
-//
-//
+// parseConfig grabs the remaining settings from the config file, including the
+// machine identifiers and ranges.
 func parseConfig(c *Config, cfgFile string) {
 	cfgfile := getConfig(cfgFile)
 
@@ -101,35 +101,30 @@ func parseConfig(c *Config, cfgFile string) {
 		c.Interval = getTimeInterval(cfgfile["interval"].(string))
 	}
 
-	machineRangesInterface := cfgfile["machineRanges"].([]interface{})
-	machineIdentifiersInterface := cfgfile["machineIdentifiers"].([]interface{})
-
-	machineRangesList := make([]map[string]interface{}, 0)
-	for labIndex := range machineRangesInterface {
-		aLab := machineRangesInterface[labIndex].(map[string]interface{})
-		machineRangesList = append(machineRangesList, aLab)
-
-	}
-	c.MachineRanges = machineRangesList
-
-	machineIdentifiersList := make([]map[string]interface{}, 0)
-	for labIndex := range machineIdentifiersInterface {
-		anLab := machineIdentifiersInterface[labIndex].(map[string]interface{})
-		machineIdentifiersList = append(machineIdentifiersList, anLab)
-	}
-
-  c.MachineIdentifiers = machineIdentifiersList
+	c.MachineRanges = interfaceToList(cfgfile, "machineRanges")
+	c.MachineIdentifiers = interfaceToList(cfgfile, "machineIdentifiers")
 }
 
-//
-//
+// getArgs parses flags from the command line.
 func getArgs() map[string]interface{} {
 	args, err := docopt.Parse(usage, nil, true, version, false)
 	check(err)
 	return args
 }
 
-//
+// interfaceToList takes the config file and parses whichever group name it is
+// given and expands it into a larger data structure.
+func interfaceToList(cfgfile map[string]interface{}, name string) []map[string]interface{} {
+	groupInterface := cfgfile[name].([]interface{})
+	groupList := make([]map[string]interface{}, 0)
+	for i := range groupInterface {
+		lab := groupInterface[i].(map[string]interface{})
+		groupList = append(groupList, lab)
+	}
+	return groupList
+}
+
+// getEnvars
 //
 func getEnVars() map[string]string {
 	envMap := make(map[string]string)
@@ -141,7 +136,7 @@ func getEnVars() map[string]string {
 	return envMap
 }
 
-//
+// getConfigfile
 //
 func getConfigfile(filename interface{}) string {
 	var config string
@@ -162,7 +157,7 @@ func getConfigfile(filename interface{}) string {
 	return config
 }
 
-//
+// bindArg
 //
 func bindArg(input interface{}) (string, string) {
 	var interf, port string
@@ -175,7 +170,7 @@ func bindArg(input interface{}) (string, string) {
 	return interf, port
 }
 
-//
+// intervalArg
 //
 func intervalArg(input interface{}) time.Duration {
 	var interval time.Duration
@@ -188,7 +183,7 @@ func intervalArg(input interface{}) time.Duration {
 	return interval
 }
 
-//
+// splitInterfacePort
 //
 func splitInterfacePort(inputString string) (string, string) {
 	var interf, port string
@@ -212,7 +207,7 @@ func splitInterfacePort(inputString string) (string, string) {
 	return interf, port
 }
 
-//
+// mapSubexpNames
 //
 func mapSubexpNames(m, n []string) map[string]string {
 	/* http://stackoverflow.com/a/30483899/6279238 */
@@ -225,7 +220,7 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-//
+// getTimeInterval
 //
 func getTimeInterval(intervalString string) time.Duration {
 	var interval time.Duration
@@ -243,7 +238,7 @@ func getTimeInterval(intervalString string) time.Duration {
 	return interval
 }
 
-//
+// stringToTime
 //
 func stringToTime(intervalString string, timeUnit string) time.Duration {
 	durationString := strings.TrimSuffix(intervalString, timeUnit)
