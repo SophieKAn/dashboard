@@ -44,27 +44,28 @@ Options:
 	version = "dashboard 1.0.0"
 )
 
-//
-//
+// Configure method on struct Config parses command-line arguments, environment
+// variables, and the config file in that order, to glean settings for running
+// the server.
 func (c *Config) Configure() {
 	parseArgs(c, getArgs())
 	parseEnvs(c, getEnVars())
 	parseConfig(c, c.Configfile)
 }
 
-//
-//
+// parseArgs parses the command-line arguments and calls functions to interpret
+// each one of them.
 func parseArgs(c *Config, args map[string]interface{}) {
-	c.Configfile = configCommand(args["--config"])
-	c.Interface, c.Port = bindCommand(args["--bind"])
-	c.Interval = intervalCommand(args["--interval"])
+	c.Configfile = getConfigfile(args["--config"])
+	c.Interface, c.Port = bindArg(args["--bind"])
+	c.Interval = intervalArg(args["--interval"])
 	c.Debug = args["--debug"].(bool)
 }
 
-//
-//
+// parseEnvs parses a map of relevant environment variables and uses the values
+// if they aren't already present from the command line.
 func parseEnvs(c *Config, enVars map[string]string) {
-	i, p := splitInterfacePort(enVars["DASHBOARD_BIND"])
+	i, p := splitInterfacePort(enVars["BIND"])
 	if c.Interface == "" {
 		c.Interface = i
 	}
@@ -73,20 +74,20 @@ func parseEnvs(c *Config, enVars map[string]string) {
 		c.Port = p
 	}
 
-	dbg, err := strconv.ParseBool(enVars["DASHBOARD_DEBUG"])
+	dbg, err := strconv.ParseBool(enVars["DEBUG"])
 	if err != nil {
 		dbg = false
 	}
 
-	c.Debug = c.Debug || dbg
-
 	if c.Interval == 0 {
-		c.Interval = getInterval(enVars["DASHBOARD_INTERVAL"])
+		c.Interval = getTimeInterval(enVars["INTERVAL"])
 	}
+
+	c.Debug = c.Debug || dbg
 }
 
-//
-//
+// parseConfig grabs the remaining settings from the config file, including the
+// machine identifiers and ranges.
 func parseConfig(c *Config, cfgFile string) {
 	cfgfile := getConfig(cfgFile)
 
@@ -97,53 +98,49 @@ func parseConfig(c *Config, cfgFile string) {
 		c.Port = cfgfile["port"].(string)
 	}
 	if c.Interval == 0 {
-		c.Interval = getInterval(cfgfile["interval"].(string))
+		c.Interval = getTimeInterval(cfgfile["interval"].(string))
 	}
 
-	machineRangesInterface := cfgfile["machineRanges"].([]interface{})
-	machineIdentifiersInterface := cfgfile["machineIdentifiers"].([]interface{})
-
-	machineRangesList := make([]map[string]interface{}, 0)
-	for labIndex := range machineRangesInterface {
-		aLab := machineRangesInterface[labIndex].(map[string]interface{})
-		machineRangesList = append(machineRangesList, aLab)
-
-	}
-	c.MachineRanges = machineRangesList
-
-	machineIdentifiersList := make([]map[string]interface{}, 0)
-	for labIndex := range machineIdentifiersInterface {
-		anLab := machineIdentifiersInterface[labIndex].(map[string]interface{})
-		machineIdentifiersList = append(machineIdentifiersList, anLab)
-	}
-
-  c.MachineIdentifiers = machineIdentifiersList
+	c.MachineRanges = interfaceToList(cfgfile, "machineRanges")
+	c.MachineIdentifiers = interfaceToList(cfgfile, "machineIdentifiers")
 }
 
-//
-//
+// getArgs parses flags from the command line.
 func getArgs() map[string]interface{} {
 	args, err := docopt.Parse(usage, nil, true, version, false)
 	check(err)
-
 	return args
 }
 
-//
-//
+// interfaceToList takes the config file and parses whichever group name it is
+// given and expands it into a larger data structure.
+func interfaceToList(cfgfile map[string]interface{}, name string) []map[string]interface{} {
+	groupInterface := cfgfile[name].([]interface{})
+	groupList := make([]map[string]interface{}, 0)
+	for i := range groupInterface {
+		lab := groupInterface[i].(map[string]interface{})
+		groupList = append(groupList, lab)
+	}
+	return groupList
+}
+
+// getEnvars creates a map of all the necessary environment variables for the
+// program.
 func getEnVars() map[string]string {
 	envMap := make(map[string]string)
 
-	envMap["DASHBOARD_BIND"] = os.Getenv("DASHBOARD_BIND")
-	envMap["DASHBOARD_INTERVAL"] = os.Getenv("DASHBOARD_INTERVAL")
-	envMap["DASHBOARD_DEBUG"] = os.Getenv("DASHBOARD_DEBUG")
+	envMap["BIND"] = os.Getenv("DASHBOARD_BIND")
+	envMap["INTERVAL"] = os.Getenv("DASHBOARD_INTERVAL")
+	envMap["DEBUG"] = os.Getenv("DASHBOARD_DEBUG")
 
 	return envMap
 }
 
-//
-//
-func configCommand(filename interface{}) string {
+// getConfigfile gets passed the name for the config file that was or wasn't
+// given on the command line. If there wasn't one there it check environment
+// variables, then default linux and freeBSD path. If it can't find a config
+// file, the program will not proceed.
+func getConfigfile(filename interface{}) string {
 	var config string
 
 	if filename != nil {
@@ -155,16 +152,16 @@ func configCommand(filename interface{}) string {
 	} else if _, err := os.Stat(freeBSDConfigPath); err == nil {
 		config = freeBSDConfigPath
 	} else {
-		fmt.Println("This program requires a config file to run. See documentation")
+		fmt.Println("This program requires a config file to run. Please refer to documentation.")
 		os.Exit(1)
 	}
 
 	return config
 }
 
-//
-//
-func bindCommand(input interface{}) (string, string) {
+// bindArg parses the command-line argument for binding interface to port,
+// then returns the acquired interface and port.
+func bindArg(input interface{}) (string, string) {
 	var interf, port string
 
 	if input != nil {
@@ -175,23 +172,23 @@ func bindCommand(input interface{}) (string, string) {
 	return interf, port
 }
 
-//
-//
-func intervalCommand(input interface{}) time.Duration {
+// intervalArg interpretes the command-line interval argument if there is one.
+// If not, it returns zero.
+func intervalArg(input interface{}) time.Duration {
 	var interval time.Duration
 
 	if input != nil {
 		intervalString := input.(string)
-		interval = getInterval(intervalString)
+		interval = getTimeInterval(intervalString)
 	}
 
 	return interval
 }
 
-//
-//
+// splitInterfacePort takes a string taken from the command line or an 
+// environment variable and splits it using a regex.
 func splitInterfacePort(inputString string) (string, string) {
-	var intf, prt string
+	var interf, port string
 
 	if strings.Contains(inputString, ":") {
 		rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d{4})?")
@@ -199,21 +196,19 @@ func splitInterfacePort(inputString string) (string, string) {
 		matchMap := mapSubexpNames(matches, rgx.SubexpNames())
 
 		if i := matchMap["interface"]; i != "" {
-			intf = i
+			interf = i
 		}
 
 		if p := matchMap["port"]; p != "" {
-			prt = p
+			port = p
 		}
 
 	} else {
-		intf = inputString
+		interf = inputString
 	}
-	return intf, prt
+	return interf, port
 }
 
-//
-//
 func mapSubexpNames(m, n []string) map[string]string {
 	/* http://stackoverflow.com/a/30483899/6279238 */
 	/* Code found in comment on main answer */
@@ -225,9 +220,9 @@ func mapSubexpNames(m, n []string) map[string]string {
 	return r
 }
 
-//
-//
-func getInterval(intervalString string) time.Duration {
+// getTimeInterval finds a time.Duration depending on the number and time units
+// given on the command line or from environment variables.
+func getTimeInterval(intervalString string) time.Duration {
 	var interval time.Duration
 
 	if strings.Contains(intervalString, "s") {
@@ -243,12 +238,12 @@ func getInterval(intervalString string) time.Duration {
 	return interval
 }
 
-//
-//
+// stringToTime takes the string representing the update interval and converts
+// it into a time.Duration type.
 func stringToTime(intervalString string, timeUnit string) time.Duration {
-	number := strings.TrimSuffix(intervalString, timeUnit)
-	theTime, err := strconv.Atoi(number)
+	durationString := strings.TrimSuffix(intervalString, timeUnit)
+	duration, err := strconv.Atoi(durationString)
 	check(err)
 
-	return time.Duration(theTime)
+	return time.Duration(duration)
 }

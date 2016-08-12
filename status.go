@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-// UpdateStatuses takes the list of Machine pointers and iterates through them
+// updateStatuses takes the list of Machine pointers and iterates through them
 // using nested goroutines to call Update for each one. It waits until all
 // goroutines are finished before returning.
 func updateStatuses(machines []*Machine, config *Config) chan *Machine {
@@ -33,8 +33,9 @@ func updateStatuses(machines []*Machine, config *Config) chan *Machine {
 	return out
 }
 
-// Update takes an output channel. For machine m, it checks for a change in
-// status, and if it has changed sends itself along the 'out' channel.
+// Update takes an output channel and the config settings. For machine m, it
+// checks for a change in status, and if it has changed sends itself along the
+// 'out' channel.
 func (m *Machine) Update(out chan *Machine, config *Config) {
 	newStatus := getStatus(m.Hostname, config)
 
@@ -44,9 +45,8 @@ func (m *Machine) Update(out chan *Machine, config *Config) {
 	}
 }
 
-// GetStatus takes a Hostname and checks whether it is available on port ***REMOVED***
-// or ***REMOVED*** (linux and windows respectively). If not accessible on either port,
-// that host is deemed inaccesssible.
+// getStatus takes a hostname and the config, and checks that hostname
+// according to all the machine identifiers in the config.
 func getStatus(hostname string, config *Config) string {
 
 	for _, identifier := range config.MachineIdentifiers {
@@ -58,7 +58,7 @@ func getStatus(hostname string, config *Config) string {
 	return "inaccessible"
 }
 
-// Accessible takes a hostname and a port number and tries to establish a
+// accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
 func accessible(hostn string, port string) bool {
 	conn, err := net.DialTimeout("tcp", hostn+":"+port, 1*time.Second)
