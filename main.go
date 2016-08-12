@@ -4,7 +4,6 @@ package main
 // Main.go //
 /////////////
 
-
 /*
 Usage: Start a web server to display current usage of labs.
 
@@ -21,8 +20,7 @@ Options:
 */
 
 func main() {
-	var settings Config
+	settings := new(Config)
 	settings.Configure()
-
 	runServer(settings)
 }

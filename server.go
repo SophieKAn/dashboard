@@ -16,7 +16,7 @@ type Machine struct {
 	Status   string    `json:"status"`
 }
 
-func runServer(config Config) {
+func runServer(config *Config) {
 
 	if config.Debug {
 		fmt.Printf("interface: %s\n", config.Interface)
