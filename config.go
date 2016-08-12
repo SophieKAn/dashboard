@@ -55,16 +55,16 @@ func (c *Config) Configure() {
 //
 //
 func parseArgs(c *Config, args map[string]interface{}) {
-	c.Configfile = configCommand(args["--config"])
-	c.Interface, c.Port = bindCommand(args["--bind"])
-	c.Interval = intervalCommand(args["--interval"])
+	c.Configfile = getConfigfile(args["--config"])
+	c.Interface, c.Port = bindArg(args["--bind"])
+	c.Interval = intervalArg(args["--interval"])
 	c.Debug = args["--debug"].(bool)
 }
 
 //
 //
 func parseEnvs(c *Config, enVars map[string]string) {
-	i, p := splitInterfacePort(enVars["DASHBOARD_BIND"])
+	i, p := splitInterfacePort(enVars["BIND"])
 	if c.Interface == "" {
 		c.Interface = i
 	}
@@ -73,16 +73,17 @@ func parseEnvs(c *Config, enVars map[string]string) {
 		c.Port = p
 	}
 
-	dbg, err := strconv.ParseBool(enVars["DASHBOARD_DEBUG"])
+	dbg, err := strconv.ParseBool(enVars["DEBUG"])
 	if err != nil {
 		dbg = false
 	}
 
-	c.Debug = c.Debug || dbg
 
 	if c.Interval == 0 {
-		c.Interval = getInterval(enVars["DASHBOARD_INTERVAL"])
+		c.Interval = getTimeInterval(enVars["INTERVAL"])
 	}
+
+	c.Debug = c.Debug || dbg
 }
 
 //
@@ -97,7 +98,7 @@ func parseConfig(c *Config, cfgFile string) {
 		c.Port = cfgfile["port"].(string)
 	}
 	if c.Interval == 0 {
-		c.Interval = getInterval(cfgfile["interval"].(string))
+		c.Interval = getTimeInterval(cfgfile["interval"].(string))
 	}
 
 	machineRangesInterface := cfgfile["machineRanges"].([]interface{})
@@ -125,7 +126,6 @@ func parseConfig(c *Config, cfgFile string) {
 func getArgs() map[string]interface{} {
 	args, err := docopt.Parse(usage, nil, true, version, false)
 	check(err)
-
 	return args
 }
 
@@ -134,16 +134,16 @@ func getArgs() map[string]interface{} {
 func getEnVars() map[string]string {
 	envMap := make(map[string]string)
 
-	envMap["DASHBOARD_BIND"] = os.Getenv("DASHBOARD_BIND")
-	envMap["DASHBOARD_INTERVAL"] = os.Getenv("DASHBOARD_INTERVAL")
-	envMap["DASHBOARD_DEBUG"] = os.Getenv("DASHBOARD_DEBUG")
+	envMap["BIND"] = os.Getenv("DASHBOARD_BIND")
+	envMap["INTERVAL"] = os.Getenv("DASHBOARD_INTERVAL")
+	envMap["DEBUG"] = os.Getenv("DASHBOARD_DEBUG")
 
 	return envMap
 }
 
 //
 //
-func configCommand(filename interface{}) string {
+func getConfigfile(filename interface{}) string {
 	var config string
 
 	if filename != nil {
@@ -164,7 +164,7 @@ func configCommand(filename interface{}) string {
 
 //
 //
-func bindCommand(input interface{}) (string, string) {
+func bindArg(input interface{}) (string, string) {
 	var interf, port string
 
 	if input != nil {
@@ -177,12 +177,12 @@ func bindCommand(input interface{}) (string, string) {
 
 //
 //
-func intervalCommand(input interface{}) time.Duration {
+func intervalArg(input interface{}) time.Duration {
 	var interval time.Duration
 
 	if input != nil {
 		intervalString := input.(string)
-		interval = getInterval(intervalString)
+		interval = getTimeInterval(intervalString)
 	}
 
 	return interval
@@ -191,7 +191,7 @@ func intervalCommand(input interface{}) time.Duration {
 //
 //
 func splitInterfacePort(inputString string) (string, string) {
-	var intf, prt string
+	var interf, port string
 
 	if strings.Contains(inputString, ":") {
 		rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d{4})?")
@@ -199,17 +199,17 @@ func splitInterfacePort(inputString string) (string, string) {
 		matchMap := mapSubexpNames(matches, rgx.SubexpNames())
 
 		if i := matchMap["interface"]; i != "" {
-			intf = i
+			interf = i
 		}
 
 		if p := matchMap["port"]; p != "" {
-			prt = p
+			port = p
 		}
 
 	} else {
-		intf = inputString
+		interf = inputString
 	}
-	return intf, prt
+	return interf, port
 }
 
 //
@@ -227,7 +227,7 @@ func mapSubexpNames(m, n []string) map[string]string {
 
 //
 //
-func getInterval(intervalString string) time.Duration {
+func getTimeInterval(intervalString string) time.Duration {
 	var interval time.Duration
 
 	if strings.Contains(intervalString, "s") {
@@ -246,9 +246,9 @@ func getInterval(intervalString string) time.Duration {
 //
 //
 func stringToTime(intervalString string, timeUnit string) time.Duration {
-	number := strings.TrimSuffix(intervalString, timeUnit)
-	theTime, err := strconv.Atoi(number)
+	durationString := strings.TrimSuffix(intervalString, timeUnit)
+	duration, err := strconv.Atoi(durationString)
 	check(err)
 
-	return time.Duration(theTime)
+	return time.Duration(duration)
 }

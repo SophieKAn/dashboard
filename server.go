@@ -13,17 +13,12 @@ import (
 
 type Machine struct {
 	Hostname string `json:"hostname"`
-	Status   string    `json:"status"`
+	Status   string `json:"status"`
 }
 
 func runServer(config *Config) {
-
-	if config.Debug {
-		fmt.Printf("interface: %s\n", config.Interface)
-		fmt.Printf("port:      %s\n", config.Port)
-		fmt.Printf("interval:  %s\n", config.Interval)
-		fmt.Printf("debug:     %t\n", config.Debug)
-	}
+	/* > Check for debug mode */
+	debugMode(config)
 
 	/* > Get lab configuration */
 	allMachines := getMachines(config.MachineRanges)
@@ -35,7 +30,8 @@ func runServer(config *Config) {
 	/* > Start the server */
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/config.json", func(w http.ResponseWriter, r *http.Request) {
-		data, _ := json.Marshal(config)
+		data, err := json.Marshal(config)
+		check(err)
 		fmt.Fprintf(w, string(data))
 	})
 	http.HandleFunc("/upd", func(w http.ResponseWriter, r *http.Request) {
@@ -80,4 +76,13 @@ func serveUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *ht
 		client.send <- data
 	}()
 	client.writePump()
+}
+
+func debugMode(config *Config) {
+	if config.Debug {
+		fmt.Printf("interface: %s\n", config.Interface)
+		fmt.Printf("port:      %s\n", config.Port)
+		fmt.Printf("interval:  %s\n", config.Interval)
+		fmt.Printf("debug:     %t\n", config.Debug)
+	}
 }
