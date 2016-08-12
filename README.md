@@ -3,7 +3,7 @@
 Start a web server to display current usage of labs.
 
 # Preconditions
-1. `dashboard` must have `go` installed.
+1. `dashboard` requires `go` to be installed.
 
 # Installation
 `...`
