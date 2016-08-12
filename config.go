@@ -25,9 +25,23 @@ type Config struct {
 }
 
 const (
-	defaultConfig     = "./static/config.json"
 	linuxConfigPath   = "/etc/dashboard/config.json"
 	freeBSDConfigPath = "/usr/local/etc/dashboard/config.json"
+
+	usage = `Start a web server to display current usage of labs.
+
+Usage:
+  dashboard [options]
+  dashboard --version
+  dashboard -h | --help
+
+Options:
+  --debug                                             Turn on debugging output.
+  -b, --bind=(<interface>:<port>|<interface>|:<port>) Set the interface and port for the server.
+  -c, --config=<file>                                 Specify a configuration file.
+  -i, --interval=(<sec>s|<min>m|<hr>h)`
+
+	version = "dashboard 1.0.0"
 )
 
 //
@@ -109,7 +123,7 @@ func parseConfig(c *Config, cfgFile string) {
 //
 //
 func getArgs() map[string]interface{} {
-	args, err := docopt.Parse(Usage, nil, true, Version, false)
+	args, err := docopt.Parse(usage, nil, true, version, false)
 	Check(err)
 
 	return args
