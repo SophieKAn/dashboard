@@ -8,6 +8,7 @@ import (
 	"./static"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -62,8 +63,8 @@ func runServer(config *Config) {
 			check(err)
 			hub.broadcast <- message
 			updates = nil
-		} else {
-			fmt.Println("no changes")
+		} else if config.Debug {
+			log.Println("no changes")
 		}
 		time.Sleep(config.Interval)
 	}
