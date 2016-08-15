@@ -5,7 +5,7 @@ package main
 ///////////////
 
 import (
-	"fmt"
+	"log"
 	"net"
 	"sync"
 	"time"
@@ -16,7 +16,7 @@ import (
 // goroutines are finished before returning.
 func updateStatuses(machines []*Machine, config *Config) chan *Machine {
 	if config.Debug {
-		fmt.Println("updating")
+		log.Println("updating")
 	}
 	out := make(chan *Machine)
 	go func(chan *Machine) {
