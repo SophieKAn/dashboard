@@ -185,7 +185,7 @@ func intervalArg(input interface{}) time.Duration {
 	return interval
 }
 
-// splitInterfacePort takes a string taken from the command line or an 
+// splitInterfacePort takes a string taken from the command line or an
 // environment variable and splits it using a regex.
 func splitInterfacePort(inputString string) (string, string) {
 	var interf, port string

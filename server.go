@@ -5,6 +5,7 @@ package main
 ///////////////
 
 import (
+	"./static"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -30,8 +31,10 @@ func runServer(config *Config) {
 	hub := newHub()
 	go hub.run()
 
-	/* > Start the server */
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	/* > Define handlers */
+	http.HandleFunc("/", serveString(static.Index, "text/html"))
+	http.HandleFunc("/css/style.css", serveString(static.Style, "text/css"))
+	http.HandleFunc("/js/script.js", serveString(static.Script, "application/javascript"))
 	http.HandleFunc("/config.json", func(w http.ResponseWriter, r *http.Request) {
 		data, err := json.Marshal(config)
 		check(err)
@@ -41,6 +44,7 @@ func runServer(config *Config) {
 		serveUpdates(hub, allMachines, w, r)
 	})
 
+	/* > Start the server */
 	go func() {
 		err := http.ListenAndServe(config.Interface+":"+config.Port, nil)
 		check(err)
@@ -61,7 +65,6 @@ func runServer(config *Config) {
 		} else {
 			fmt.Println("no changes")
 		}
-
 		time.Sleep(config.Interval)
 	}
 }
@@ -81,6 +84,15 @@ func serveUpdates(hub *Hub, allMachines []*Machine, w http.ResponseWriter, r *ht
 		client.send <- data
 	}()
 	client.writePump()
+}
+
+// serveString takes a static file represented as a string and sets the correct
+// content-type to be written to the ResponseWriter.
+func serveString(s string, contentType string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentType)
+		fmt.Fprintf(w, s)
+	}
 }
 
 // debugMode checks the config to see if Debug is true, and if so prints

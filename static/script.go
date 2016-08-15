@@ -1,3 +1,6 @@
+package static
+
+const Script = `
 function initializePage(url) {
   let req = new XMLHttpRequest();
   req.onreadystatechange = () => {
@@ -70,3 +73,4 @@ function pad(n) {
   // only for positive integers
   return (n < 10) ? ("0" + n.toString()) : String(n);
 }
+`

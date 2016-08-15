@@ -1,3 +1,6 @@
+package static
+
+const Style = `
 .widget,.cs_lab {
   display: -webkit-flex;
   -webkit-flex-flow: row wrap;
@@ -43,3 +46,4 @@
   color:white;
   line-height:30px;
 }
+`

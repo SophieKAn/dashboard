@@ -1,3 +1,6 @@
+package static
+
+const Index = `
 <!DOCTYPE html>
 <html lang='en'>
   <head>
@@ -9,3 +12,4 @@
     <script type='text/javascript' src='js/script.js'></script>
   </body>
 </html>
+`
