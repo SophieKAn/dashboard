@@ -15,7 +15,9 @@ import (
 // using nested goroutines to call Update for each one. It waits until all
 // goroutines are finished before returning.
 func updateStatuses(machines []*Machine, config *Config) chan *Machine {
-	fmt.Println("updating")
+	if config.Debug {
+		fmt.Println("updating")
+	}
 	out := make(chan *Machine)
 	go func(chan *Machine) {
 		var wg sync.WaitGroup

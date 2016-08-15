@@ -62,7 +62,7 @@ func runServer(config *Config) {
 			check(err)
 			hub.broadcast <- message
 			updates = nil
-		} else {
+		} else if config.Debug {
 			fmt.Println("no changes")
 		}
 		time.Sleep(config.Interval)
