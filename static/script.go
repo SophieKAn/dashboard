@@ -42,7 +42,16 @@ function createLabMachine(cs_lab, i) {
 
 
 function updater(result) {
-  var conn = new WebSocket("ws://" + result.interface + ":" + result.port + "/upd");
+  let loc = window.location;
+  let new_uri = "";
+  if (loc.protocol === "https:") {
+    new_uri += "wss:";
+  } else {
+    new_uri += "ws:";
+  }
+  new_uri += "//" + loc.host;
+  new_uri += "/upd";
+  var conn = new WebSocket(new_uri);
   conn.onclose = function(evt) {
     console.log("Connection closed");
   }
