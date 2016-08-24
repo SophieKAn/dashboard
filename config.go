@@ -8,9 +8,7 @@ import (
 	"fmt"
 	"github.com/docopt/docopt-go"
 	"os"
-	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
