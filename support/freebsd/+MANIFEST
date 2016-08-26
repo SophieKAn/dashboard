@@ -1,0 +1,48 @@
+name: dashboard 
+version: "1.0.0"
+origin: www/dashboard
+comment: A dashboard.
+arch: amd64
+www: https://gitlab.***REMOVED***/cs-support/dashboard
+maintainer: cs.support@wwu.edu
+prefix: /usr/local
+licenselogic: or
+licenses: [MIT]
+flatsize: 6634027
+users: [dashboard]
+groups: [dashboard]
+desc: <<EOD
+The dashboard is awesome. You know you love it.
+EOD
+categories: [monitoring]
+files: {
+    /usr/local/bin/dashboard: '3be184b***REMOVED***5156118d4dfd5aac8e0284ee99fdc67bc93b006140d1e72190baed'
+    /usr/local/etc/rc.d/dashboard: '225153ea2284ef91dac37c877850c8ae1efb1b6b575adf0c14796b37e05580da'
+    /usr/local/etc/dashboard/LICENSE: '4394a9d806bdb0bb4b38cd7075050fdf00009ec0ed7f1093789157abc1d28501'
+    /usr/local/etc/dashboard/LICENSE.gorilla-websocket: '2be1b548b0387ca8948e1bb9434e709126904d15f622cc2d0d8e7f186e4d122d'
+    /usr/local/etc/dashboard/config.json: 'fa2200b3cbc2cbd52608a092db0cbde5d32480376bea42fe0369583b2b7d9768'
+
+}
+directories: {
+    /usr/local/etc/dashboard: 'y';
+}
+scripts: {
+  pre-install: <<EOD
+    #!/bin/sh
+    PW=/usr/sbin/pw
+    echo "===> Creating groups."
+    if ! ${PW} groupshow dashboard >/dev/null 2>&1; then
+        echo "Creating group 'dashboard' with gid '666'."
+        ${PW} group add dashboard -g 666
+    else
+        echo "Using existing group 'dashboard'."
+    fi
+    echo "===> Creating users."
+    if ! ${PW} usershow dashboard >/dev/null 2>&1; then
+        echo "Creating user 'dashboard' with uid '666'."
+        ${PW} useradd dashboard -u 666 -g 666 -c "Dashboard Webserver" -d /nonexistent -s /usr/sbin/nologin
+    else
+        echo "Using existing user 'dashboard'."
+    fi
+EOD
+}

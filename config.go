@@ -8,9 +8,7 @@ import (
 	"fmt"
 	"github.com/docopt/docopt-go"
 	"os"
-	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -53,58 +51,6 @@ func (c *Config) Configure() {
 	parseConfig(c, c.Configfile)
 }
 
-// parseArgs parses the command-line arguments and calls functions to interpret
-// each one of them.
-func parseArgs(c *Config, args map[string]interface{}) {
-	c.Configfile = getConfigfile(args["--config"])
-	c.Interface, c.Port = bindArg(args["--bind"])
-	c.Interval = intervalArg(args["--interval"])
-	c.Debug = args["--debug"].(bool)
-}
-
-// parseEnvs parses a map of relevant environment variables and uses the values
-// if they aren't already present from the command line.
-func parseEnvs(c *Config, enVars map[string]string) {
-	i, p := splitInterfacePort(enVars["BIND"])
-	if c.Interface == "" {
-		c.Interface = i
-	}
-
-	if c.Port == "" {
-		c.Port = p
-	}
-
-	dbg, err := strconv.ParseBool(enVars["DEBUG"])
-	if err != nil {
-		dbg = false
-	}
-
-	if c.Interval == 0 {
-		c.Interval = getTimeInterval(enVars["INTERVAL"])
-	}
-
-	c.Debug = c.Debug || dbg
-}
-
-// parseConfig grabs the remaining settings from the config file, including the
-// machine identifiers and ranges.
-func parseConfig(c *Config, cfgFile string) {
-	cfgfile := getConfig(cfgFile)
-
-	if c.Interface == "" {
-		c.Interface = cfgfile["interface"].(string)
-	}
-	if c.Port == "" {
-		c.Port = cfgfile["port"].(string)
-	}
-	if c.Interval == 0 {
-		c.Interval = getTimeInterval(cfgfile["interval"].(string))
-	}
-
-	c.MachineRanges = interfaceToList(cfgfile, "machineRanges")
-	c.MachineIdentifiers = interfaceToList(cfgfile, "machineIdentifiers")
-}
-
 // getArgs parses flags from the command line.
 func getArgs() map[string]interface{} {
 	args, err := docopt.Parse(usage, nil, true, version, false)
@@ -112,28 +58,13 @@ func getArgs() map[string]interface{} {
 	return args
 }
 
-// interfaceToList takes the config file and parses whichever group name it is
-// given and expands it into a larger data structure.
-func interfaceToList(cfgfile map[string]interface{}, name string) []map[string]interface{} {
-	groupInterface := cfgfile[name].([]interface{})
-	groupList := make([]map[string]interface{}, 0)
-	for i := range groupInterface {
-		lab := groupInterface[i].(map[string]interface{})
-		groupList = append(groupList, lab)
-	}
-	return groupList
-}
-
-// getEnvars creates a map of all the necessary environment variables for the
-// program.
-func getEnVars() map[string]string {
-	envMap := make(map[string]string)
-
-	envMap["BIND"] = os.Getenv("DASHBOARD_BIND")
-	envMap["INTERVAL"] = os.Getenv("DASHBOARD_INTERVAL")
-	envMap["DEBUG"] = os.Getenv("DASHBOARD_DEBUG")
-
-	return envMap
+// parseArgs parses the command-line arguments and calls functions to interpret
+// each one of them.
+func parseArgs(c *Config, args map[string]interface{}) {
+	c.Configfile = getConfigfile(args["--config"])
+	c.Interface, c.Port = bindArg(args["--bind"])
+	c.Interval = intervalArg(args["--interval"])
+	c.Debug = args["--debug"].(bool)
 }
 
 // getConfigfile gets passed the name for the config file that was or wasn't
@@ -185,65 +116,57 @@ func intervalArg(input interface{}) time.Duration {
 	return interval
 }
 
-// splitInterfacePort takes a string taken from the command line or an
-// environment variable and splits it using a regex.
-func splitInterfacePort(inputString string) (string, string) {
-	var interf, port string
+// getEnvars creates a map of all the necessary environment variables for the
+// program.
+func getEnVars() map[string]string {
+	envMap := make(map[string]string)
 
-	if strings.Contains(inputString, ":") {
-		rgx := regexp.MustCompile("(?P<interface>[a-zA-Z0-9.-]+)?:(?P<port>\\d{4})?")
-		matches := rgx.FindStringSubmatch(inputString)
-		matchMap := mapSubexpNames(matches, rgx.SubexpNames())
+	envMap["BIND"] = os.Getenv("DASHBOARD_BIND")
+	envMap["INTERVAL"] = os.Getenv("DASHBOARD_INTERVAL")
+	envMap["DEBUG"] = os.Getenv("DASHBOARD_DEBUG")
 
-		if i := matchMap["interface"]; i != "" {
-			interf = i
-		}
-
-		if p := matchMap["port"]; p != "" {
-			port = p
-		}
-
-	} else {
-		interf = inputString
-	}
-	return interf, port
+	return envMap
 }
 
-func mapSubexpNames(m, n []string) map[string]string {
-	/* http://stackoverflow.com/a/30483899/6279238 */
-	/* Code found in comment on main answer */
-	m, n = m[1:], n[1:]
-	r := make(map[string]string, len(m))
-	for i, _ := range n {
-		r[n[i]] = m[i]
-	}
-	return r
-}
-
-// getTimeInterval finds a time.Duration depending on the number and time units
-// given on the command line or from environment variables.
-func getTimeInterval(intervalString string) time.Duration {
-	var interval time.Duration
-
-	if strings.Contains(intervalString, "s") {
-		interval = time.Second * stringToTime(intervalString, "s")
-
-	} else if strings.Contains(intervalString, "m") {
-		interval = time.Minute * stringToTime(intervalString, "m")
-
-	} else if strings.Contains(intervalString, "h") {
-		interval = time.Hour * stringToTime(intervalString, "h")
+// parseEnvs parses a map of relevant environment variables and uses the values
+// if they aren't already present from the command line.
+func parseEnvs(c *Config, enVars map[string]string) {
+	i, p := splitInterfacePort(enVars["BIND"])
+	if c.Interface == "" {
+		c.Interface = i
 	}
 
-	return interval
+	if c.Port == "" {
+		c.Port = p
+	}
+
+	dbg, err := strconv.ParseBool(enVars["DEBUG"])
+	if err != nil {
+		dbg = false
+	}
+
+	if c.Interval == 0 {
+		c.Interval = getTimeInterval(enVars["INTERVAL"])
+	}
+
+	c.Debug = c.Debug || dbg
 }
 
-// stringToTime takes the string representing the update interval and converts
-// it into a time.Duration type.
-func stringToTime(intervalString string, timeUnit string) time.Duration {
-	durationString := strings.TrimSuffix(intervalString, timeUnit)
-	duration, err := strconv.Atoi(durationString)
-	check(err)
+// parseConfig grabs the remaining settings from the config file, including the
+// machine identifiers and ranges.
+func parseConfig(c *Config, cfgFile string) {
+	cfgfile := getConfig(cfgFile)
 
-	return time.Duration(duration)
+	if c.Interface == "" {
+		c.Interface = cfgfile["interface"].(string)
+	}
+	if c.Port == "" {
+		c.Port = cfgfile["port"].(string)
+	}
+	if c.Interval == 0 {
+		c.Interval = getTimeInterval(cfgfile["interval"].(string))
+	}
+
+	c.MachineRanges = interfaceToList(cfgfile, "machineRanges")
+	c.MachineIdentifiers = interfaceToList(cfgfile, "machineIdentifiers")
 }

@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# PROVIDE: dashboard
+# REQUIRE: DAEMON NETWORKING
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local to enable the dashboard server:
+#
+# dashboard_enable="YES"
+# dashboard_user="<run server as this user>"
+# minecraft_flags="<set as needed>"
+
+. /etc/rc.subr
+
+name=dashboard
+rcvar=dashboard_enable
+
+load_rc_config ${name}
+
+command="/usr/local/bin/dashboard"
+
+: ${dashboard_enable="NO"}
+: ${dashboard_user="dashboard"}
+: ${dashboard_flags=""}
+
+start_cmd="/usr/sbin/daemon -f -u ${dashboard_user} ${command} ${dashboard_flags}"
+
+run_rc_command "$1"
