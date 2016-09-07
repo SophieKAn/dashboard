@@ -6,13 +6,16 @@ Start a web server to display current usage of labs.
 1. `dashboard` requires `go` be installed.
 
 # Installation
-`...`
+## FreeBSD
+`dashboard` is currently designed to run on FreeBSD 10.3.
 
-
-
-
+To install the package as a service to run in the background, download `/support/freebsd/dashboard-VERSION.txz` from the repository and run `sudo pkg install dashboard-VERSION.txz` in the directory containing the file.
 
 # Usage
+Once the package has been installed on FreeBSD, just run `sudo service dashboard start` or `sudo service dashboard stop` to start and stop the service.
+
+If you obtained the program by running `go get`, the following flags and environment variables may be used to customize settings and run it from the command line.
+
 `dashboard` is the command used to run the server. It requires a configuration file called `config.json` that is specified
 as an environment variable or with command-line flags.
 
