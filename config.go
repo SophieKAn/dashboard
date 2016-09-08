@@ -23,7 +23,6 @@ type Config struct {
 }
 
 const (
-	linuxConfigPath   = "/etc/dashboard/config.json"
 	freeBSDConfigPath = "/usr/local/etc/dashboard/config.json"
 
 	usage = `Start a web server to display current usage of labs.
@@ -78,8 +77,6 @@ func getConfigfile(filename interface{}) string {
 		config = filename.(string)
 	} else if envConf := os.Getenv("DASHBOARD_CONFIG"); envConf != "" {
 		config = envConf
-	} else if _, err := os.Stat(linuxConfigPath); err == nil {
-		config = linuxConfigPath
 	} else if _, err := os.Stat(freeBSDConfigPath); err == nil {
 		config = freeBSDConfigPath
 	} else {
