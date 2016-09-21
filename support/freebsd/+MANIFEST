@@ -8,7 +8,7 @@ maintainer: cs.support@wwu.edu
 prefix: /usr/local
 licenselogic: or
 licenses: [MIT]
-flatsize: 6634027
+flatsize: 6634026
 users: [dashboard]
 groups: [dashboard]
 desc: <<EOD
@@ -16,8 +16,8 @@ The dashboard is awesome. You know you love it.
 EOD
 categories: [monitoring]
 files: {
-    /usr/local/bin/dashboard: '3be184b***REMOVED***5156118d4dfd5aac8e0284ee99fdc67bc93b006140d1e72190baed'
-    /usr/local/etc/rc.d/dashboard: '225153ea2284ef91dac37c877850c8ae1efb1b6b575adf0c14796b37e05580da'
+    /usr/local/bin/dashboard: 'bf1170b5462f36e664470144b0ac14c955d03484496fd9ee84a20ff9c07fd87c'
+    /usr/local/etc/rc.d/dashboard: 'e09d9710f6e710fe93ff4d8e854899ed1a21213cab5accb162cf6138487a6fb8'
     /usr/local/etc/dashboard/LICENSE: '4394a9d806bdb0bb4b38cd7075050fdf00009ec0ed7f1093789157abc1d28501'
     /usr/local/etc/dashboard/LICENSE.gorilla-websocket: '2be1b548b0387ca8948e1bb9434e709126904d15f622cc2d0d8e7f186e4d122d'
     /usr/local/etc/dashboard/config.json: 'fa2200b3cbc2cbd52608a092db0cbde5d32480376bea42fe0369583b2b7d9768'
