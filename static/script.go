@@ -34,7 +34,7 @@ function initializePage(url) {
 function createLabMachine(cs_lab, i) {
   let lab_machine = document.createElement('div');
   lab_machine.className = "lab_machine";
-  lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + ".***REMOVED***";
+  lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + ".generic-domain";
   lab_machine.innerText = i;
   cs_lab.appendChild(lab_machine);
 }

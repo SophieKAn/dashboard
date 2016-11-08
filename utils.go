@@ -44,7 +44,7 @@ func getMachines(labs []map[string]interface{}) []*Machine {
 		start, end := int(lab["start"].(float64)), int(lab["end"].(float64))
 
 		for i := start; i <= end; i++ {
-			hostname := fmt.Sprintf("%s-%02d.***REMOVED***", prefix, i)
+			hostname := fmt.Sprintf("%s-%02d.generic-domain", prefix, i)
 			allMachines = append(allMachines, &Machine{hostname, "inaccessible"})
 		}
 	}
