@@ -2,7 +2,7 @@
   "interface": "localhost",
   "port": "8080",
   "interval": "10s",
-	"domain":"generic-domain",
+  "domain":"generic-domain",
   "machineRanges": [
     {
       "prefix": "***REMOVED***",
