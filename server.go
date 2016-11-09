@@ -26,7 +26,7 @@ func runServer(config *Config) {
 	debugMode(config)
 
 	/* > Get lab configuration */
-	allMachines := getMachines(config.MachineRanges)
+	allMachines := getMachines(config.MachineRanges, config.Domain)
 
 	/* > Run the Hub */
 	hub := newHub()
@@ -103,6 +103,7 @@ func debugMode(config *Config) {
 		fmt.Printf("interface: %s\n", config.Interface)
 		fmt.Printf("port:      %s\n", config.Port)
 		fmt.Printf("interval:  %s\n", config.Interval)
+		fmt.Printf("domain:    %s\n", config.Domain)
 		fmt.Printf("debug:     %t\n", config.Debug)
 	}
 }

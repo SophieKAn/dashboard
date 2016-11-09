@@ -37,14 +37,14 @@ func getConfig(fileName string) map[string]interface{} {
 // getMachines takes the unmarshalled "machineRanges" list and constructs a
 // slice of pointers to Machine structs representing all the machines from the
 // config.
-func getMachines(labs []map[string]interface{}) []*Machine {
+func getMachines(labs []map[string]interface{}, domain string) []*Machine {
 	var allMachines []*Machine
 	for _, lab := range labs {
 		prefix := lab["prefix"].(string)
 		start, end := int(lab["start"].(float64)), int(lab["end"].(float64))
 
 		for i := start; i <= end; i++ {
-			hostname := fmt.Sprintf("%s-%02d.generic-domain", prefix, i)
+			hostname := fmt.Sprintf("%s-%02d.%s", prefix, i, domain)
 			allMachines = append(allMachines, &Machine{hostname, "inaccessible"})
 		}
 	}

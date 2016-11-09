@@ -16,6 +16,7 @@ type Config struct {
 	Configfile         string                   `json:"-"`
 	Interface          string                   `json:"interface"`
 	Port               string                   `json:"port"`
+	Domain             string                   `json:"domain"`
 	Debug              bool                     `json:"-"`
 	Interval           time.Duration            `json:"-"`
 	MachineRanges      []map[string]interface{} `json:"machineRanges"`
@@ -163,6 +164,8 @@ func parseConfig(c *Config, cfgFile string) {
 	if c.Interval == 0 {
 		c.Interval = getTimeInterval(cfgfile["interval"].(string))
 	}
+
+	c.Domain = cfgfile["domain"].(string)
 
 	c.MachineRanges = interfaceToList(cfgfile, "machineRanges")
 	c.MachineIdentifiers = interfaceToList(cfgfile, "machineIdentifiers")

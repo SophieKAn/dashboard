@@ -20,7 +20,7 @@ function initializePage(url) {
           cs_lab.appendChild(lab_title);
           widget.appendChild(cs_lab);
           for (i = l.start; i <= l.end; i++) {
-            createLabMachine(cs_lab, i);
+            createLabMachine(cs_lab, i, result.domain);
           }
         });
         updater(result);
@@ -31,10 +31,10 @@ function initializePage(url) {
   req.send();
 }
 
-function createLabMachine(cs_lab, i) {
+function createLabMachine(cs_lab, i, domain) {
   let lab_machine = document.createElement('div');
   lab_machine.className = "lab_machine";
-  lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + ".generic-domain";
+  lab_machine.id = cs_lab.firstChild.innerText + "-" + pad(i) + "." + domain;
   lab_machine.innerText = i;
   cs_lab.appendChild(lab_machine);
 }
