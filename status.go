@@ -52,6 +52,7 @@ func (m *Machine) Update(out chan *Machine, config *Config) {
 func getStatus(hostname string, config *Config) string {
 
 	for _, identifier := range config.MachineIdentifiers {
+		time.Sleep(100 * time.Millisecond)
 		if accessible(hostname, identifier["port"].(string)) {
 			return identifier["name"].(string)
 		}
@@ -63,7 +64,7 @@ func getStatus(hostname string, config *Config) string {
 // accessible takes a hostname and a port number and tries to establish a
 // connection using those parameters.
 func accessible(hostn string, port string) bool {
-	conn, err := net.DialTimeout("tcp", hostn+":"+port, 1*time.Second)
+	conn, err := net.DialTimeout("tcp", hostn+":"+port, 5*time.Second)
 
 	if err == nil {
 		conn.Close()
