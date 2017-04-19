@@ -52,7 +52,7 @@ func (m *Machine) Update(out chan *Machine, config *Config) {
 func getStatus(hostname string, config *Config) string {
 
 	for _, identifier := range config.MachineIdentifiers {
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 		if accessible(hostname, identifier["port"].(string)) {
 			return identifier["name"].(string)
 		}
