@@ -43,12 +43,12 @@
     {
       "name": "linux",
       "port": "***REMOVED***",
-      "color":"MediumSeaGreen"
+      "color":"#058c42"
     },
     {
       "name": "windows",
       "port": "***REMOVED***",
-      "color": "MediumSlateBlue"
+      "color": "#2c5da5"
     }
   ]
 }
