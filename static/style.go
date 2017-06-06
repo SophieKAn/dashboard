@@ -18,9 +18,10 @@ const Style = `
 
 
 .cs_lab {
-  background:tomato;
+  background:#070707;
   width:200px;
   padding:20px;
+  margin:10px;
   justify-content:flex-start;
   align-content:space-between;
 }

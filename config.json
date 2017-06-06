@@ -43,13 +43,13 @@
   "machineIdentifiers": [
     {
       "name": "linux",
-      "port": "8080",
-      "color":"MediumSeaGreen"
+      "port": "***REMOVED***",
+      "color":"#058c42"
     },
     {
       "name": "windows",
-      "port": "8080",
-      "color": "MediumSlateBlue"
+      "port": "***REMOVED***",
+      "color": "#2c5da5"
     }
   ]
 }
