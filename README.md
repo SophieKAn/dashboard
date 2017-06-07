@@ -29,32 +29,32 @@ as an environment variable or with command-line flags.
   "interval": "10s",
   "machineRanges": [
     {
-      "prefix": "***REMOVED***",
+      "prefix": "labID1",
       "start": 0,
       "end": 25
     },
     {
-      "prefix": "***REMOVED***",
+      "prefix": "labID2",
       "start": 0,
       "end": 25
     },
     {
-      "prefix": "***REMOVED***",
+      "prefix": "labID3",
       "start": 1,
       "end": 20
     },
     {
-      "prefix": "***REMOVED***",
+      "prefix": "labID4",
       "start": 0,
       "end": 21
     },
     {
-      "prefix": "***REMOVED***",
+      "prefix": "labID5",
       "start": 1,
       "end": 20
     },
     {
-      "prefix": "***REMOVED***",
+      "prefix": "labID6",
       "start": 1,
       "end": 25
     },
@@ -67,12 +67,12 @@ as an environment variable or with command-line flags.
   "machineIdentifiers": [
     {
       "name": "linux",
-      "port": "***REMOVED***",
+      "port": "<port-number>",
       "color":"MediumSeaGreen"
     },
     {
       "name": "windows",
-      "port": "***REMOVED***",
+      "port": "<port-number>",
       "color": "MediumSlateBlue"
     }
   ]
