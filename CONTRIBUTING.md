@@ -8,14 +8,14 @@ unlikely your contributions will be accepted.
 ## Repository Management
 Repository management is a tricky thing to get right. The preferred model for
 `dashboard` is to have a [central repository][repo] that all contributors fork. No
-changes should reach the `master` branch except by way of a [merge request].
+changes should reach the `master` branch except by way of a merge request.
 
 ## Submitting Issues
 Issues can be for **anything**, not just bugs. Find some incorrect
 documentation? Submit an issue! Is there a function that's logically sound, but
 butchers the code style conventions? Submit an issue! Do you want the software
 to support a new feature? Submit an issue! Better yet, fix the problem yourself
-and submit a [merge request].
+and submit a merge request.
 
 #### Bug Reports
 A bug is a _demonstrable problem_ caused by code in the repository.
@@ -102,7 +102,7 @@ guidelines to ensure coherence throughout the application.
   when it makes sense to do so.
 
 ### Version Control
-- [Fork][forking] the [central repository][repo] and work from a clone of your
+- Fork the [central repository][repo] and work from a clone of your
   own fork.
 
 - Follow the [topic branch][topic branch] model and submit merge requests from
@@ -114,11 +114,9 @@ guidelines to ensure coherence throughout the application.
 ## Shout-outs
 - Much thanks to [Nicolas Gallagher] for his generic [issue guidelines].
 
-[repo]: https://gitlab.***REMOVED***/cs-support/dashboard
-[merge request]: https://gitlab.***REMOVED***/help/workflow/forking_workflow.md#merging-upstream
+[repo]: https://github.com/wwu-cs-support/dashboard
 [GitLab Flow]: http://doc.gitlab.com/ee/workflow/gitlab_flow.html
 [Effective Go]: https://golang.org/doc/effective_go.html
-[forking]: https://gitlab.***REMOVED***/help/workflow/forking_workflow.md
 [topic branch]: https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows#Topic-Branches
 [Nicolas Gallagher]: http://nicolasgallagher.com/
 [issue guidelines]: https://github.com/necolas/issue-guidelines
