@@ -1,9 +1,9 @@
-name: dashboard 
+name: dashboard
 version: "1.0.0"
 origin: www/dashboard
 comment: A dashboard.
 arch: amd64
-www: https://gitlab.***REMOVED***/cs-support/dashboard
+www: https://github.com/wwucs-support/dashboard
 maintainer: cs.support@wwu.edu
 prefix: /usr/local
 licenselogic: or
